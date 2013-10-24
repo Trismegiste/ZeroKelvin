@@ -1,7 +1,7 @@
 <?php
 
 /**
- * UnserializeTest tests the unserialiazer service
+ * UnserializeTest tests the unserializer service
  */
 class UnserializeTest extends PHPUnit_Framework_TestCase
 {
@@ -21,7 +21,7 @@ class UnserializeTest extends PHPUnit_Framework_TestCase
             "illogical",
             null,
             [123], [123, 456],
-            [123, [456], "w:;\":s:3:\"esh" => 789, "str" => "com\"bo", [[]]]
+            [[], 123, [456, [[[]]]], "w:;\":s:3:\"esh" => 789, "str" => "com\"bo", [[]]]
         ];
         $fixtures = [];
         foreach ($data as $val) {

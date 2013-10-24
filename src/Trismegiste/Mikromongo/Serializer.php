@@ -7,7 +7,7 @@
 namespace Trismegiste\Mikromongo;
 
 /**
- * Serializer is a un/serialiazer service
+ * Serializer is a un/serializer service
  */
 class Serializer
 {
