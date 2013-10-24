@@ -156,4 +156,47 @@ class UnserializeTest extends PHPUnit_Framework_TestCase
                 ), phpUnserialize(serialize($val), $rest));
     }
 
+    public function testArrayObject()
+    {
+        $rest = '';
+        $val = new \ArrayObject(array(1, 2, 3));
+        echo serialize($val);
+        print_r(phpUnserialize(serialize($val), $rest));
+    }
+
+    public function testDateTime()
+    {
+        $rest = '';
+        $val = new \DateTime();
+        echo serialize($val);
+        print_r(phpUnserialize(serialize($val), $rest));
+    }
+
+    public function testMongoBin()
+    {
+        $rest = '';
+        $val = new \MongoBinData("yolo", 2);
+        echo serialize($val);
+        print_r(phpUnserialize(serialize($val), $rest));
+    }
+
+    public function testSpl()
+    {
+        $rest = '';
+        $val = new \SplObjectStorage();
+        $val[new \stdClass()] = 456;
+        $val[new \stdClass()] = 789;
+        echo serialize($val);
+        print_r(phpUnserialize(serialize($val), $rest));
+    }
+
+    public function testRef()
+    {
+        $rest = '';
+        $val = new \stdClass();
+        $val->self = $val;
+        echo serialize($val);
+        print_r(phpUnserialize(serialize($val), $rest));
+    }
+
 }
