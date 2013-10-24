@@ -1,0 +1,22 @@
+{
+    "name": "trismegiste/mikromongo",
+    "description": "A MongoDb micro-ODM for micro-framework",
+    "type": "library",
+    "keywords": ["mongo", "dbal", "mongodb", "odm", "microframework", "micro", "serializer"],
+    "license": "CC-BY-SA-3.0",
+    "authors": [
+        {
+            "name": "Trismegiste",
+            "email": "flo@trismegiste.net"
+        }
+    ],
+    "require": {
+        "php": ">=5.4.3"
+    },
+    "minimum-stability": "dev",
+    "autoload": {
+        "psr-0": {
+            "Trismegiste\\Mikromongo\\": "src"
+        }
+    }
+}
