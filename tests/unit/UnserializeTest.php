@@ -31,6 +31,28 @@ class UnserializeTest extends PHPUnit_Framework_TestCase
         return $fixtures;
     }
 
+    public function getTransformedType()
+    {
+        $obj = new \stdClass();
+        $obj->prop = 123;
+
+        $val = clone $obj;
+        $val->tab = array(1, true, "2\";2", array(3, new \stdClass()), 4);
+
+        return [
+            [$obj, ['--class' => 'stdClass', 'prop' => 123]],
+            [$val, [
+                    '--class' => 'stdClass',
+                    'prop' => 123,
+                    'tab' => [
+                        1, true, "2\";2",
+                        [3, ['--class' => 'stdClass']],
+                        4
+                    ]
+                ]]
+        ];
+    }
+
     /**
      * @dataProvider getInternalType
      */
@@ -39,33 +61,15 @@ class UnserializeTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($val, $this->service->unserialize(serialize($val)));
     }
 
+    /**
+     * @dataProvider getTransformedType
+     */
+    public function testTransformedObject($src, $dst)
+    {
+        $this->assertEquals($dst, $this->service->unserialize(serialize($src)));
+    }
+
     /*
-      public function testSimpleObject()
-      {
-      $rest = '';
-      $val = new \stdClass();
-      $val->arf = 123;
-      $this->assertEquals(array('--class' => 'stdClass', 'arf' => 123), phpUnserialize(serialize($val), $rest));
-      }
-
-      public function testComplexObject()
-      {
-      $rest = '';
-      $val = new \stdClass();
-      $val->arf = 123;
-      $val->tab = array(1, true, "2\";2", array(3, new \stdClass()), 4);
-
-      $this->assertEquals(array(
-      '--class' => 'stdClass',
-      'arf' => 123,
-      'tab' => array(
-      1, true, "2\";2",
-      array(3, array('--class' => 'stdClass')),
-      4
-      )
-      ), phpUnserialize(serialize($val), $rest));
-      }
-
       public function testArrayObject()
       {
       $rest = '';
