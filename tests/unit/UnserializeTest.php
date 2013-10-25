@@ -1,5 +1,7 @@
 <?php
 
+use Trismegiste\Mikromongo\Serializer;
+
 /**
  * UnserializeTest tests the unserializer service
  */
@@ -10,7 +12,7 @@ class UnserializeTest extends PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->service = new \Trismegiste\Mikromongo\Serializer();
+        $this->service = new Serializer();
     }
 
     public function getInternalType()
@@ -40,13 +42,13 @@ class UnserializeTest extends PHPUnit_Framework_TestCase
         $val->tab = array(1, true, "2\";2", array(3, new \stdClass()), 4);
 
         return [
-            [$obj, ['--class' => 'stdClass', 'prop' => 123]],
+            [$obj, [Serializer::META_CLASS => 'stdClass', 'prop' => 123]],
             [$val, [
-                    '--class' => 'stdClass',
+                    Serializer::META_CLASS => 'stdClass',
                     'prop' => 123,
                     'tab' => [
                         1, true, "2\";2",
-                        [3, ['--class' => 'stdClass']],
+                        [3, [Serializer::META_CLASS => 'stdClass']],
                         4
                     ]
                 ]]
@@ -113,4 +115,24 @@ class UnserializeTest extends PHPUnit_Framework_TestCase
       print_r(phpUnserialize(serialize($val), $rest));
       }
      */
+
+    public function testRef()
+    {
+        $obj = new \stdClass();
+        $obj->prop1 = 123;
+        $obj->prop2 = array(0, 1, 2,);
+        $obj->ref_this = $obj;
+        $obj->prop3 = new \stdClass();
+        $obj->prop4 = new \stdClass();
+        $obj->ref_prop1 = &$obj->prop1;
+        $obj->ref_prop2 = &$obj->prop2;
+        $obj->ref_prop3 = $obj->prop3;
+        $obj->ref_prop2_1 = &$obj->prop2[1];
+        $obj->clone_ref_this = $obj->ref_this;
+        $obj->ref_ref_this = &$obj->ref_this;
+        $obj->prop3->inner_ref = $obj->prop4;
+
+        print_r($this->service->unserialize(serialize($obj)));
+    }
+
 }

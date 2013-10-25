@@ -12,6 +12,13 @@ namespace Trismegiste\Mikromongo;
 class Serializer
 {
 
+    const META_CLASS = '@class';
+    const META_PRIVATE = '-';
+    const META_PROTECTED = '';
+    const META_PUBLIC = '+';
+    const META_CUSTOM = '@content';
+    const META_REFERENCE = '@ref_';
+
     public function unserialize($str)
     {
         $rest = '';
@@ -19,7 +26,7 @@ class Serializer
     }
 
     protected function recurUnserializer($str, &$rest)
-    {        
+    {
         $extract = array();
 
         switch ($str[0]) {
@@ -68,16 +75,32 @@ class Serializer
                 return $assoc;
 
             case 'O':
-                preg_match('#^O:(\d+):"([^"]+)":(\d+):(.*)#', $str, $extract);
+                $objAssoc = array();
+                preg_match('#^O:(\d+):"([^"]+)":(\d+):{(.*)#', $str, $extract);
 
                 $className = $extract[2];
-                $objLen = $extract[3];
-                $objBody = $extract[4];
-                # A little hacky; plunders the Array unserialize logic.
-                $objAssoc = $this->recurUnserializer("a:$objLen:$objBody", $rest);
-                $objAssoc['--class'] = $className;
+                $len = $extract[3];
+                $body = $extract[4];
+
+                for ($idx = 0; $idx < $len; $idx++) {
+                    $key = $this->recurUnserializer($body, $rest);
+                    $body = $rest;
+                    $val = $this->recurUnserializer($body, $rest);
+                    $objAssoc[$key] = $val;
+                    $body = $rest;
+                }
+                $rest = substr($body, 1); // strip the }
+                $objAssoc[self::META_CLASS] = $className;
 
                 return $objAssoc;
+
+            case 'r':
+            case 'R':
+                preg_match('#^(r|R):(\d+);(.*)#', $str, $extract);
+                $rest = $extract[3];
+                return (string) $extract[2];
+
+                break;
 
             default:
                 throw new \Exception('Fail');
