@@ -1,9 +1,11 @@
 <?php
 
+namespace tests\unit;
+
 /**
  * UnserializeTest tests the unserializer service
  */
-class UnserializeTest extends PHPUnit_Framework_TestCase
+class UnserializeTest extends \PHPUnit_Framework_TestCase
 {
 
     protected $service;
@@ -39,6 +41,9 @@ class UnserializeTest extends PHPUnit_Framework_TestCase
         $val = clone $obj;
         $val->tab = array(1, true, "2\";2", array(3, new \stdClass()), 4);
 
+        $spl1 = new \ArrayObject(array(1, 2, 3));
+        $flt1 = ['--class' => 'ArrayObject', '--content' => new \MongoBinData('x:i:0;a:3:{i:0;i:1;i:1;i:2;i:2;i:3;};m:a:0:{}', 2)];
+
         return [
             [$obj, ['--class' => 'stdClass', 'prop' => 123]],
             [$val, [
@@ -49,7 +54,8 @@ class UnserializeTest extends PHPUnit_Framework_TestCase
                         [3, ['--class' => 'stdClass']],
                         4
                     ]
-                ]]
+                ]],
+            [$spl1, $flt1]
         ];
     }
 
@@ -70,13 +76,16 @@ class UnserializeTest extends PHPUnit_Framework_TestCase
     }
 
     /*
-      public function testArrayObject()
+      public function testSpl()
       {
       $rest = '';
-      $val = new \ArrayObject(array(1, 2, 3));
+      $val = new \SplObjectStorage();
+      $val[new \stdClass()] = 456;
+      $val[new \stdClass()] = 789;
       echo serialize($val);
       print_r(phpUnserialize(serialize($val), $rest));
       }
+
 
       public function testDateTime()
       {
@@ -94,15 +103,7 @@ class UnserializeTest extends PHPUnit_Framework_TestCase
       print_r(phpUnserialize(serialize($val), $rest));
       }
 
-      public function testSpl()
-      {
-      $rest = '';
-      $val = new \SplObjectStorage();
-      $val[new \stdClass()] = 456;
-      $val[new \stdClass()] = 789;
-      echo serialize($val);
-      print_r(phpUnserialize(serialize($val), $rest));
-      }
+
 
       public function testRef()
       {
