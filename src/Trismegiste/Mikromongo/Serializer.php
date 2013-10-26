@@ -112,9 +112,15 @@ class Serializer
             case 'R':
                 preg_match('#^(r|R):(\d+);(.*)#', $str, $extract);
                 $rest = $extract[3];
-                return array(self::META_REFERENCE . $extract[1] => (int) $extract[2]);
 
-                break;
+                return [self::META_REFERENCE . $extract[1] => (int) $extract[2]];
+
+            case 'C':
+                preg_match('#^C:(\d+):"([^"]+)":(\d+):(.*)#', $str, $extract);
+                return [
+                    '--class' => $extract[2],
+                    '--content' => new \MongoBinData(substr($extract[4], 1, $extract[3]), 2)
+                ];
 
             default:
                 throw new \Exception('Fail');
