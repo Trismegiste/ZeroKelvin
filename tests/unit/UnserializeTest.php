@@ -1,11 +1,13 @@
 <?php
 
+namespace tests\unit;
+
 use Trismegiste\Mikromongo\Serializer;
 
 /**
  * UnserializeTest tests the unserializer service
  */
-class UnserializeTest extends PHPUnit_Framework_TestCase
+class UnserializeTest extends \PHPUnit_Framework_TestCase
 {
 
     protected $service;
@@ -71,6 +73,19 @@ class UnserializeTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($dst, $this->service->unserialize(serialize($src)));
     }
 
+    public function testPropAccess()
+    {
+        $obj = new \tests\fixtures\Access();
+        $flat = [
+            Serializer::META_CLASS => 'tests\fixtures\Access',
+            '-notInherited' => 111,
+            '#inherited' => 222,
+            'openbar' => 333
+        ];
+
+        $this->assertEquals($flat, $this->service->unserialize(serialize($obj)));
+    }
+
     /*
       public function testArrayObject()
       {
@@ -132,7 +147,7 @@ class UnserializeTest extends PHPUnit_Framework_TestCase
         $obj->ref_ref_this = &$obj->ref_this;
         $obj->prop3->inner_ref = $obj->prop4;
 
-        print_r($this->service->unserialize(serialize($obj)));
+//        print_r($this->service->unserialize(serialize($obj)));
     }
 
 }

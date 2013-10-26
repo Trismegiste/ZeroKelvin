@@ -14,8 +14,8 @@ class Serializer
 
     const META_CLASS = '@class';
     const META_PRIVATE = '-';
-    const META_PROTECTED = '';
-    const META_PUBLIC = '+';
+    const META_PROTECTED = '#';
+    const META_PUBLIC = '';
     const META_CUSTOM = '@content';
     const META_REFERENCE = '@ref_';
 
@@ -64,8 +64,10 @@ class Serializer
                 $body = $extract[2];
 
                 for ($idx = 0; $idx < $len; $idx++) {
+                    // manage key                    
                     $key = $this->recurUnserializer($body, $rest);
                     $body = $rest;
+                    // manage value
                     $val = $this->recurUnserializer($body, $rest);
                     $assoc[$key] = $val;
                     $body = $rest;
@@ -79,12 +81,24 @@ class Serializer
                 preg_match('#^O:(\d+):"([^"]+)":(\d+):{(.*)#', $str, $extract);
 
                 $className = $extract[2];
+                $classLen = strlen($className);
                 $len = $extract[3];
                 $body = $extract[4];
 
                 for ($idx = 0; $idx < $len; $idx++) {
+                    // manage key
                     $key = $this->recurUnserializer($body, $rest);
+                    if ($key[0] === "\000") {
+                        if ($key[1] === '*') {
+                            $key = self::META_PROTECTED . substr($key, 3);
+                        } else {
+                            $key = self::META_PRIVATE . substr($key, 2 + $classLen);
+                        }
+                    } else {
+                        $key = self::META_PUBLIC . $key;
+                    }
                     $body = $rest;
+                    // manage value
                     $val = $this->recurUnserializer($body, $rest);
                     $objAssoc[$key] = $val;
                     $body = $rest;
@@ -98,7 +112,7 @@ class Serializer
             case 'R':
                 preg_match('#^(r|R):(\d+);(.*)#', $str, $extract);
                 $rest = $extract[3];
-                return (string) $extract[2];
+                return array(self::META_REFERENCE . $extract[1] => (int) $extract[2]);
 
                 break;
 
