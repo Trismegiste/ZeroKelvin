@@ -4,12 +4,12 @@
  * Mikromongo
  */
 
-namespace Trismegiste\Mikromongo;
+namespace Trismegiste\Mikromongo\Transformer;
 
 /**
  * Serializer is a un/serializer service
  */
-class Serializer implements Transformer\Serialization
+class Serializer implements Serialization
 {
 
     public function unserialize($str)

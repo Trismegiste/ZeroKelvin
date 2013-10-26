@@ -2,7 +2,7 @@
 
 namespace tests\unit;
 
-use Trismegiste\Mikromongo\Serializer;
+use Trismegiste\Mikromongo\Transformer\Serializer;
 
 /**
  * UnserializeTest tests the unserializer service
