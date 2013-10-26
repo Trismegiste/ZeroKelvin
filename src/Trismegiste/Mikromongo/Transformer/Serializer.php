@@ -60,6 +60,15 @@ class Serializer implements Serialization
                 if (is_array($val)) {
                     $current .= $this->fromArray($val);
                 } else {
+                    if (is_object($val)) {
+                        switch (get_class($val)) {
+                            case 'MongoDate' :
+                                if (isset($fqcn) && ($fqcn === 'DateTime')) {
+                                    $val = date('Y-m-d H:i:s', $val->sec);
+                                }
+                                break;
+                        }
+                    }
                     $current.= serialize($val);
                 }
             }

@@ -107,6 +107,17 @@ class Unserializer implements Serialization
                 $rest = substr($body, 1); // strip the }
                 $objAssoc[self::META_CLASS] = $className;
 
+                // handling special object for MongoDb
+                switch ($className) {
+                    case 'DateTime':
+                        $objAssoc['date'] = new \MongoDate(strtotime($objAssoc['date']));
+                        break;
+
+                    case 'MongoBinData':
+                        $objAssoc = new \MongoBinData($objAssoc['bin'], $objAssoc['type']);
+                        break;
+                }
+
                 return $objAssoc;
 
             case 'r':

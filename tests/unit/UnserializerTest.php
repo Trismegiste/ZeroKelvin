@@ -44,23 +44,20 @@ class UnserializerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($dst, $this->service->toArray(serialize($src)));
     }
 
-    /*
+    public function testDateTime()
+    {
+        $rest = '';
+        $val = new \DateTime();
+        $result = $this->service->toArray(serialize($val), $rest);
+        $this->assertInstanceOf('MongoDate', $result['date']);
+        $this->assertEquals('DateTime', $result[Unserializer::META_CLASS]);
+    }
 
-      public function testDateTime()
-      {
-      $rest = '';
-      $val = new \DateTime();
-      echo serialize($val);
-      print_r(phpUnserialize(serialize($val), $rest));
-      }
+    public function testMongoBinData()
+    {
+        $rest = '';
+        $val = new \MongoBinData("yolo", 2);
+        $this->assertInstanceOf('MongoBinData', $this->service->toArray(serialize($val), $rest));
+    }
 
-      public function testMongoBin()
-      {
-      $rest = '';
-      $val = new \MongoBinData("yolo", 2);
-      echo serialize($val);
-      print_r(phpUnserialize(serialize($val), $rest));
-      }
-
-     */
 }
