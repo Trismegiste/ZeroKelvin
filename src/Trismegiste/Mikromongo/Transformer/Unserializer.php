@@ -129,8 +129,14 @@ class Unserializer implements Serialization
 
             case 'C':
                 preg_match('#^C:(\d+):"([^"]+)":(\d+):(.*)#', $str, $extract);
+
+                $className = $extract[2];
+                if ($className === 'MongoId') {
+                    return new \MongoId(substr($extract[4], 1, $extract[3]));
+                }
+
                 return [
-                    self::META_CLASS => $extract[2],
+                    self::META_CLASS => $className,
                     self::META_CUSTOM => new \MongoBinData(substr($extract[4], 1, $extract[3]), \MongoBinData::BYTE_ARRAY)
                 ];
 
