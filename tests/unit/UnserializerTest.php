@@ -2,12 +2,12 @@
 
 namespace tests\unit;
 
-use Trismegiste\Mikromongo\Transformer\Serializer;
+use Trismegiste\Mikromongo\Transformer\Unserializer;
 
 /**
- * UnserializeTest tests the unserializer service
+ * UnserializerTest tests the unserializer service
  */
-class UnserializeTest extends \PHPUnit_Framework_TestCase
+class UnserializerTest extends \PHPUnit_Framework_TestCase
 {
 
     use DataProvider;
@@ -16,7 +16,7 @@ class UnserializeTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->service = new Serializer();
+        $this->service = new Unserializer();
     }
 
     /**
@@ -42,14 +42,6 @@ class UnserializeTest extends \PHPUnit_Framework_TestCase
     public function testTransformedObject($src, $dst)
     {
         $this->assertEquals($dst, $this->service->unserialize(serialize($src)));
-    }
-
-    /**
-     * @dataProvider getObjectType
-     */
-    public function testSerializationObject($src, $dst)
-    {
-        $this->assertEquals($src, unserialize($this->service->serialize($dst)));
     }
 
     /*
