@@ -95,7 +95,7 @@ class UnserializeTest extends \PHPUnit_Framework_TestCase
                 new \ArrayObject([1, 2, 3]),
                 [
                     Serializer::META_CLASS => 'ArrayObject',
-                    Serializer::META_CUSTOM => new \MongoBinData('x:i:0;a:3:{i:0;i:1;i:1;i:2;i:2;i:3;};m:a:0:{}', 2)
+                    Serializer::META_CUSTOM => new \MongoBinData('x:i:0;a:3:{i:0;i:1;i:1;i:2;i:2;i:3;};m:a:0:{}', \MongoBinData::BYTE_ARRAY)
                 ]
             ]
         ];
@@ -155,33 +155,5 @@ class UnserializeTest extends \PHPUnit_Framework_TestCase
       print_r(phpUnserialize(serialize($val), $rest));
       }
 
-      public function testRef()
-      {
-      $rest = '';
-      $val = new \stdClass();
-      $val->self = $val;
-      echo serialize($val);
-      print_r(phpUnserialize(serialize($val), $rest));
-      }
      */
-
-    public function testRef()
-    {
-        $obj = new \stdClass();
-        $obj->prop1 = 123;
-        $obj->prop2 = array(0, 1, 2,);
-        $obj->ref_this = $obj;
-        $obj->prop3 = new \stdClass();
-        $obj->prop4 = new \stdClass();
-        $obj->ref_prop1 = &$obj->prop1;
-        $obj->ref_prop2 = &$obj->prop2;
-        $obj->ref_prop3 = $obj->prop3;
-        $obj->ref_prop2_1 = &$obj->prop2[1];
-        $obj->clone_ref_this = $obj->ref_this;
-        $obj->ref_ref_this = &$obj->ref_this;
-        $obj->prop3->inner_ref = $obj->prop4;
-
-        // print_r($this->service->unserialize(serialize($obj)));
-    }
-
 }

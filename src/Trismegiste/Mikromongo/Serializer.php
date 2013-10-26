@@ -117,7 +117,7 @@ class Serializer
                 preg_match('#^C:(\d+):"([^"]+)":(\d+):(.*)#', $str, $extract);
                 return [
                     self::META_CLASS => $extract[2],
-                    self::META_CUSTOM => new \MongoBinData(substr($extract[4], 1, $extract[3]), 2)
+                    self::META_CUSTOM => new \MongoBinData(substr($extract[4], 1, $extract[3]), \MongoBinData::BYTE_ARRAY)
                 ];
 
             default:
