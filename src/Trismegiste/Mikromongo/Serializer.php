@@ -9,14 +9,8 @@ namespace Trismegiste\Mikromongo;
 /**
  * Serializer is a un/serializer service
  */
-class Serializer
+class Serializer implements Transformer\Serialization
 {
-
-    const META_CLASS = '@class';
-    const META_PRIVATE = '-';
-    const META_PROTECTED = '#';
-    const META_CUSTOM = '@content';
-    const META_REFERENCE = '@ref';
 
     public function unserialize($str)
     {
