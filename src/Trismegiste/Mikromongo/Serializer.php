@@ -15,9 +15,8 @@ class Serializer
     const META_CLASS = '@class';
     const META_PRIVATE = '-';
     const META_PROTECTED = '#';
-    const META_PUBLIC = '';
     const META_CUSTOM = '@content';
-    const META_REFERENCE = '@ref_';
+    const META_REFERENCE = '@ref';
 
     public function unserialize($str)
     {
@@ -88,14 +87,13 @@ class Serializer
                 for ($idx = 0; $idx < $len; $idx++) {
                     // manage key
                     $key = $this->recurUnserializer($body, $rest);
+                    // manage access
                     if ($key[0] === "\000") {
                         if ($key[1] === '*') {
                             $key = self::META_PROTECTED . substr($key, 3);
                         } else {
                             $key = self::META_PRIVATE . substr($key, 2 + $classLen);
                         }
-                    } else {
-                        $key = self::META_PUBLIC . $key;
                     }
                     $body = $rest;
                     // manage value
@@ -113,48 +111,57 @@ class Serializer
                 preg_match('#^(r|R):(\d+);(.*)#', $str, $extract);
                 $rest = $extract[3];
 
-                return [self::META_REFERENCE . $extract[1] => (int) $extract[2]];
+                return [self::META_REFERENCE => [$extract[1] => (int) $extract[2]]];
 
             case 'C':
                 preg_match('#^C:(\d+):"([^"]+)":(\d+):(.*)#', $str, $extract);
                 return [
-                    '--class' => $extract[2],
-                    '--content' => new \MongoBinData(substr($extract[4], 1, $extract[3]), 2)
+                    self::META_CLASS => $extract[2],
+                    self::META_CUSTOM => new \MongoBinData(substr($extract[4], 1, $extract[3]), 2)
                 ];
 
             default:
-                throw new \Exception('Fail');
+                throw new \OutOfBoundsException("Fail to unserialize {$str[0]} type");
         }
     }
 
     public function serialize(array $dump)
     {
         $current = '';
-        if (array_key_exists(self::META_CLASS, $dump)) {
+        if (array_key_exists(self::META_REFERENCE, $dump)) {
+            $ref = $dump[self::META_REFERENCE];
+            return key($ref) . ':' . current($ref) . ';';
+        } else if (array_key_exists(self::META_CUSTOM, $dump)) {
             $fqcn = $dump[self::META_CLASS];
-            unset($dump[self::META_CLASS]);
-            $current = 'O:' . strlen($fqcn) . ':"' . $fqcn . '":' . (count($dump)) . ":{";
+            $content = $dump[self::META_CUSTOM];
+            $current = 'C:' . strlen($fqcn) . ':"' . $fqcn . '":' . strlen($content->bin) . ':{' . $content->bin;
         } else {
-            $current = 'a:' . (count($dump)) . ":{";
-        }
-        foreach ($dump as $key => $val) {
-            // manage key
-            if (isset($fqcn)) {
-                switch ($key[0]) {
-                    case self::META_PRIVATE:
-                        $key = "\000$fqcn\000" . substr($key, 1);
-                        break;
-                    case self::META_PROTECTED:
-                        $key = "\000*\000" . substr($key, 1);
-                        break;
-                }
-            }
-            $current .= serialize($key);
-            // manage value
-            if (is_array($val)) {
-                $current .= $this->serialize($val);
+            if (array_key_exists(self::META_CLASS, $dump)) {
+                $fqcn = $dump[self::META_CLASS];
+                unset($dump[self::META_CLASS]);
+                $current = 'O:' . strlen($fqcn) . ':"' . $fqcn . '":' . (count($dump)) . ":{";
             } else {
-                $current.= serialize($val);
+                $current = 'a:' . (count($dump)) . ":{";
+            }
+            foreach ($dump as $key => $val) {
+                // manage key
+                if (isset($fqcn)) {
+                    switch ($key[0]) {
+                        case self::META_PRIVATE:
+                            $key = "\000$fqcn\000" . substr($key, 1);
+                            break;
+                        case self::META_PROTECTED:
+                            $key = "\000*\000" . substr($key, 1);
+                            break;
+                    }
+                }
+                $current .= serialize($key);
+                // manage value
+                if (is_array($val)) {
+                    $current .= $this->serialize($val);
+                } else {
+                    $current.= serialize($val);
+                }
             }
         }
         $current .= '}';

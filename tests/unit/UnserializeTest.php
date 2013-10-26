@@ -17,6 +17,15 @@ class UnserializeTest extends \PHPUnit_Framework_TestCase
         $this->service = new Serializer();
     }
 
+    /**
+     * @expectedException \OutOfBoundsException
+     * @expectedExceptionMessage type
+     */
+    public function testMalformed()
+    {
+        $this->service->unserialize('X');
+    }
+
     public function getInternalType()
     {
         $data = [
@@ -35,27 +44,25 @@ class UnserializeTest extends \PHPUnit_Framework_TestCase
         return $fixtures;
     }
 
-    public function getTransformedType()
+    public function getObjectType()
     {
-        $obj = new \stdClass();
-        $obj->prop = 123;
+        $simple = new \stdClass();
+        $simple->prop = 123;
 
-        $val = clone $obj;
-        $val->tab = array(1, true, "2\";2", array(3, new \stdClass()), 4);
+        $cplx = clone $simple;
+        $cplx->tab = array(1, true, "2\";2", array(3, new \stdClass()), 4);
 
-        $spl1 = [
-            new \ArrayObject(array(1, 2, 3)),
-            ['--class' => 'ArrayObject', '--content' => new \MongoBinData('x:i:0;a:3:{i:0;i:1;i:1;i:2;i:2;i:3;};m:a:0:{}', 2)]
-        ];
-
-        $spl2 = new \SplObjectStorage();
-        $spl2[new \stdClass()] = 123;
-        $spl2[new \stdClass()] = 456;
-        $flt2 = ['--class' => 'SplObjectStorage', '--content' => new \MongoBinData('x:i:2;O:8:"stdClass":0:{},i:123;;O:8:"stdClass":0:{},i:456;;m:a:0:{}', 2)];
+        $ref = new \stdClass();
+        $ref->p1 = new \stdClass();
+        $ref->p2 = $ref->p1;
+        $ref->p3 = 123;
+        $ref->p4 = &$ref->p3;
 
         return [
-            [$obj, [Serializer::META_CLASS => 'stdClass', 'prop' => 123]],
-            [$val, [
+            [$simple, [Serializer::META_CLASS => 'stdClass', 'prop' => 123]],
+            [
+                $cplx,
+                [
                     Serializer::META_CLASS => 'stdClass',
                     'prop' => 123,
                     'tab' => [
@@ -63,8 +70,45 @@ class UnserializeTest extends \PHPUnit_Framework_TestCase
                         [3, [Serializer::META_CLASS => 'stdClass']],
                         4
                     ]
-                ]],
-            $spl1,
+                ]
+            ],
+            [
+                $ref,
+                [
+                    Serializer::META_CLASS => 'stdClass',
+                    'p1' => [Serializer::META_CLASS => 'stdClass'],
+                    'p2' => [Serializer::META_REFERENCE => ['r' => 2]],
+                    'p3' => 123,
+                    'p4' => [Serializer::META_REFERENCE => ['R' => 4]]
+                ]
+            ],
+            [
+                new \tests\fixtures\Access(),
+                [
+                    Serializer::META_CLASS => 'tests\fixtures\Access',
+                    '-notInherited' => 111,
+                    '#inherited' => 222,
+                    'openbar' => 333
+                ]
+            ],
+            [
+                new \ArrayObject([1, 2, 3]),
+                [
+                    Serializer::META_CLASS => 'ArrayObject',
+                    Serializer::META_CUSTOM => new \MongoBinData('x:i:0;a:3:{i:0;i:1;i:1;i:2;i:2;i:3;};m:a:0:{}', 2)
+                ]
+            ]
+        ];
+    }
+
+    public function getSplType()
+    {
+        $spl2 = new \SplObjectStorage();
+        $spl2[new \stdClass()] = 123;
+        $spl2[new \stdClass()] = 456;
+        $flt2 = [Serializer::META_CLASS => 'SplObjectStorage', Serializer::META_CUSTOM => new \MongoBinData('x:i:2;O:8:"stdClass":0:{},i:123;;O:8:"stdClass":0:{},i:456;;m:a:0:{}', 2)];
+
+        return [
             [$spl2, $flt2]
         ];
     }
@@ -78,37 +122,22 @@ class UnserializeTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @dataProvider getTransformedType
+     * @dataProvider getObjectType
      */
     public function testTransformedObject($src, $dst)
     {
         $this->assertEquals($dst, $this->service->unserialize(serialize($src)));
     }
 
-    public function testPropAccess()
+    /**
+     * @dataProvider getObjectType
+     */
+    public function testSerializationObject($src, $dst)
     {
-        $obj = new \tests\fixtures\Access();
-        $flat = [
-            Serializer::META_CLASS => 'tests\fixtures\Access',
-            '-notInherited' => 111,
-            '#inherited' => 222,
-            'openbar' => 333
-        ];
-
-        $this->assertEquals($flat, $this->service->unserialize(serialize($obj)));
+        $this->assertEquals($src, unserialize($this->service->serialize($dst)));
     }
 
     /*
-      public function testSpl()
-      {
-      $rest = '';
-      $val = ;
-      $val[new \stdClass()] = 456;
-      $val[new \stdClass()] = 789;
-      echo serialize($val);
-      print_r(phpUnserialize(serialize($val), $rest));
-      }
-
 
       public function testDateTime()
       {
@@ -125,8 +154,6 @@ class UnserializeTest extends \PHPUnit_Framework_TestCase
       echo serialize($val);
       print_r(phpUnserialize(serialize($val), $rest));
       }
-
-
 
       public function testRef()
       {
@@ -155,27 +182,6 @@ class UnserializeTest extends \PHPUnit_Framework_TestCase
         $obj->prop3->inner_ref = $obj->prop4;
 
         // print_r($this->service->unserialize(serialize($obj)));
-    }
-
-    /**
-     * @dataProvider getTransformedType
-     */
-    public function testSerializationObject($src, $dst)
-    {
-        $this->assertEquals($src, unserialize($this->service->serialize($dst)));
-    }
-
-    public function testSerializedPropAccess()
-    {
-        $obj = new \tests\fixtures\Access();
-        $flat = [
-            Serializer::META_CLASS => 'tests\fixtures\Access',
-            '-notInherited' => 111,
-            '#inherited' => 222,
-            'openbar' => 333
-        ];
-        print_r($obj);
-        print_r(unserialize($this->service->serialize($flat)));
     }
 
 }

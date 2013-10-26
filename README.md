@@ -2,7 +2,9 @@
 
 A MongoDb micro-ODM for micro-framework
 
-## Why "Micro" because...
+## Why "Micro" ?
+
+because :
 
  * zero config (if localhost)
  * zero class to extend, even abstract one !
