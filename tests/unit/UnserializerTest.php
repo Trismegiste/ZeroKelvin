@@ -25,7 +25,7 @@ class UnserializerTest extends \PHPUnit_Framework_TestCase
      */
     public function testMalformed()
     {
-        $this->service->unserialize('X');
+        $this->service->toArray('X');
     }
 
     /**
@@ -33,7 +33,7 @@ class UnserializerTest extends \PHPUnit_Framework_TestCase
      */
     public function testSimpleCase($val)
     {
-        $this->assertEquals($val, $this->service->unserialize(serialize($val)));
+        $this->assertEquals($val, $this->service->toArray(serialize($val)));
     }
 
     /**
@@ -41,7 +41,7 @@ class UnserializerTest extends \PHPUnit_Framework_TestCase
      */
     public function testTransformedObject($src, $dst)
     {
-        $this->assertEquals($dst, $this->service->unserialize(serialize($src)));
+        $this->assertEquals($dst, $this->service->toArray(serialize($src)));
     }
 
     /*

@@ -24,7 +24,7 @@ class SerializerTest extends \PHPUnit_Framework_TestCase
      */
     public function testSerializationObject($src, $dst)
     {
-        $this->assertEquals($src, unserialize($this->service->serialize($dst)));
+        $this->assertEquals($src, unserialize($this->service->fromArray($dst)));
     }
 
 }

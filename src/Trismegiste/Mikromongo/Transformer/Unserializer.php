@@ -8,11 +8,20 @@ namespace Trismegiste\Mikromongo\Transformer;
 
 /**
  * Unserializer is a unserializer service
+ * 
+ * It unserializes a string to a non-object multidimensional array
  */
 class Unserializer implements Serialization
 {
 
-    public function unserialize($str)
+    /**
+     * Transforms a serialized string into an array
+     * 
+     * @param string $str the php serialized string
+     * 
+     * @return array a full array tree with object transformed into array with magic key
+     */
+    public function toArray($str)
     {
         $rest = '';
         return $this->recurUnserializer($str, $rest);
