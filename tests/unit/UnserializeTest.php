@@ -147,7 +147,28 @@ class UnserializeTest extends \PHPUnit_Framework_TestCase
         $obj->ref_ref_this = &$obj->ref_this;
         $obj->prop3->inner_ref = $obj->prop4;
 
-//        print_r($this->service->unserialize(serialize($obj)));
+        // print_r($this->service->unserialize(serialize($obj)));
+    }
+
+    /**
+     * @dataProvider getTransformedType
+     */
+    public function testSerializationObject($src, $dst)
+    {
+        $this->assertEquals($src, unserialize($this->service->serialize($dst)));
+    }
+
+    public function testSerializedPropAccess()
+    {
+        $obj = new \tests\fixtures\Access();
+        $flat = [
+            Serializer::META_CLASS => 'tests\fixtures\Access',
+            '-notInherited' => 111,
+            '#inherited' => 222,
+            'openbar' => 333
+        ];
+        print_r($obj);
+        print_r(unserialize($this->service->serialize($flat)));
     }
 
 }
