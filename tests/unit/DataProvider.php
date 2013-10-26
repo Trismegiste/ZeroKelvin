@@ -6,7 +6,7 @@
 
 namespace tests\unit;
 
-use Trismegiste\Mikromongo\Serializer;
+use Trismegiste\Mikromongo\Transformer\Serialization;
 
 /**
  * Provider is a collection of provider
@@ -47,15 +47,15 @@ trait DataProvider
         $ref->p4 = &$ref->p3;
 
         return [
-            [$simple, [Serializer::META_CLASS => 'stdClass', 'prop' => 123]],
+            [$simple, [Serialization::META_CLASS => 'stdClass', 'prop' => 123]],
             [
                 $cplx,
                 [
-                    Serializer::META_CLASS => 'stdClass',
+                    Serialization::META_CLASS => 'stdClass',
                     'prop' => 123,
                     'tab' => [
                         1, true, "2\";2",
-                        [3, [Serializer::META_CLASS => 'stdClass']],
+                        [3, [Serialization::META_CLASS => 'stdClass']],
                         4
                     ]
                 ]
@@ -63,17 +63,17 @@ trait DataProvider
             [
                 $ref,
                 [
-                    Serializer::META_CLASS => 'stdClass',
-                    'p1' => [Serializer::META_CLASS => 'stdClass'],
-                    'p2' => [Serializer::META_REFERENCE => ['r' => 2]],
+                    Serialization::META_CLASS => 'stdClass',
+                    'p1' => [Serialization::META_CLASS => 'stdClass'],
+                    'p2' => [Serialization::META_REFERENCE => ['r' => 2]],
                     'p3' => 123,
-                    'p4' => [Serializer::META_REFERENCE => ['R' => 4]]
+                    'p4' => [Serialization::META_REFERENCE => ['R' => 4]]
                 ]
             ],
             [
                 new \tests\fixtures\Access(),
                 [
-                    Serializer::META_CLASS => 'tests\fixtures\Access',
+                    Serialization::META_CLASS => 'tests\fixtures\Access',
                     '-notInherited' => 111,
                     '#inherited' => 222,
                     'openbar' => 333
@@ -82,8 +82,8 @@ trait DataProvider
             [
                 new \ArrayObject([1, 2, 3]),
                 [
-                    Serializer::META_CLASS => 'ArrayObject',
-                    Serializer::META_CUSTOM => new \MongoBinData('x:i:0;a:3:{i:0;i:1;i:1;i:2;i:2;i:3;};m:a:0:{}', \MongoBinData::BYTE_ARRAY)
+                    Serialization::META_CLASS => 'ArrayObject',
+                    Serialization::META_CUSTOM => new \MongoBinData('x:i:0;a:3:{i:0;i:1;i:1;i:2;i:2;i:3;};m:a:0:{}', \MongoBinData::BYTE_ARRAY)
                 ]
             ]
         ];
@@ -94,7 +94,7 @@ trait DataProvider
         $spl2 = new \SplObjectStorage();
         $spl2[new \stdClass()] = 123;
         $spl2[new \stdClass()] = 456;
-        $flt2 = [Serializer::META_CLASS => 'SplObjectStorage', Serializer::META_CUSTOM => new \MongoBinData('x:i:2;O:8:"stdClass":0:{},i:123;;O:8:"stdClass":0:{},i:456;;m:a:0:{}', 2)];
+        $flt2 = [Serialization::META_CLASS => 'SplObjectStorage', Serialization::META_CUSTOM => new \MongoBinData('x:i:2;O:8:"stdClass":0:{},i:123;;O:8:"stdClass":0:{},i:456;;m:a:0:{}', 2)];
 
         return [
             [$spl2, $flt2]

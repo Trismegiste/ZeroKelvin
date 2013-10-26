@@ -4,21 +4,24 @@
  * Mikromongo
  */
 
-namespace Trismegiste\Mikromongo;
+namespace Trismegiste\Mikromongo\Transformer;
 
 /**
- * Serializer is a un/serializer service
+ * Unserializer is a unserializer service
+ * 
+ * It unserializes a string to a non-object multidimensional array
  */
-class Serializer
+class Unserializer implements Serialization
 {
 
-    const META_CLASS = '@class';
-    const META_PRIVATE = '-';
-    const META_PROTECTED = '#';
-    const META_CUSTOM = '@content';
-    const META_REFERENCE = '@ref';
-
-    public function unserialize($str)
+    /**
+     * Transforms a serialized string into an array
+     * 
+     * @param string $str the php serialized string
+     * 
+     * @return array a full array tree with object transformed into array with magic key
+     */
+    public function toArray($str)
     {
         $rest = '';
         return $this->recurUnserializer($str, $rest);
@@ -104,6 +107,17 @@ class Serializer
                 $rest = substr($body, 1); // strip the }
                 $objAssoc[self::META_CLASS] = $className;
 
+                // handling special object for MongoDb
+                switch ($className) {
+                    case 'DateTime':
+                        $objAssoc['date'] = new \MongoDate(strtotime($objAssoc['date']));
+                        break;
+
+                    case 'MongoBinData':
+                        $objAssoc = new \MongoBinData($objAssoc['bin'], $objAssoc['type']);
+                        break;
+                }
+
                 return $objAssoc;
 
             case 'r':
@@ -123,50 +137,6 @@ class Serializer
             default:
                 throw new \OutOfBoundsException("Fail to unserialize {$str[0]} type");
         }
-    }
-
-    public function serialize(array $dump)
-    {
-        $current = '';
-        if (array_key_exists(self::META_REFERENCE, $dump)) {
-            $ref = $dump[self::META_REFERENCE];
-            return key($ref) . ':' . current($ref) . ';';
-        } else if (array_key_exists(self::META_CUSTOM, $dump)) {
-            $fqcn = $dump[self::META_CLASS];
-            $content = $dump[self::META_CUSTOM];
-            $current = 'C:' . strlen($fqcn) . ':"' . $fqcn . '":' . strlen($content->bin) . ':{' . $content->bin;
-        } else {
-            if (array_key_exists(self::META_CLASS, $dump)) {
-                $fqcn = $dump[self::META_CLASS];
-                unset($dump[self::META_CLASS]);
-                $current = 'O:' . strlen($fqcn) . ':"' . $fqcn . '":' . (count($dump)) . ":{";
-            } else {
-                $current = 'a:' . (count($dump)) . ":{";
-            }
-            foreach ($dump as $key => $val) {
-                // manage key
-                if (isset($fqcn)) {
-                    switch ($key[0]) {
-                        case self::META_PRIVATE:
-                            $key = "\000$fqcn\000" . substr($key, 1);
-                            break;
-                        case self::META_PROTECTED:
-                            $key = "\000*\000" . substr($key, 1);
-                            break;
-                    }
-                }
-                $current .= serialize($key);
-                // manage value
-                if (is_array($val)) {
-                    $current .= $this->serialize($val);
-                } else {
-                    $current.= serialize($val);
-                }
-            }
-        }
-        $current .= '}';
-
-        return $current;
     }
 
 }
