@@ -10,6 +10,7 @@ use Trismegiste\Mikromongo\Persistence\Connector;
 use Trismegiste\Mikromongo\Persistence\Repository;
 use Trismegiste\Mikromongo\Transformer\Serializer;
 use Trismegiste\Mikromongo\Transformer\Unserializer;
+use tests\fixtures\Entity;
 
 /**
  * Persistence tests the persistence layer
@@ -17,14 +18,20 @@ use Trismegiste\Mikromongo\Transformer\Unserializer;
 class PersistenceTest extends \PHPUnit_Framework_TestCase
 {
 
-    public function testWrite()
+    protected $repository;
+
+    protected function setUp()
     {
         $cnx = new Connector(array('server' => 'localhost', 'database' => 'phpunit', 'collection' => 'mikro'));
+        $this->repository = new Repository($cnx->getCollection(), new Serializer(), new Unserializer());
+    }
 
-        $repo = new Repository($cnx->getCollection(), new Serializer(), new Unserializer());
-        $obj = new \stdClass();
-        $obj->wesh = 42;
-        $repo->persist($obj);
+    public function testReadWrite()
+    {
+        $obj = new Entity();
+        $this->repository->persist($obj);
+
+        print_r($this->repository->findByPk("526be431631b6fd009000000"));
     }
 
 }

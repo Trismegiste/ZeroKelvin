@@ -35,3 +35,6 @@ The goal is a tool ready to use in 5 minutes, like microframeworks
 which doesn't need extended doc reading and tons of boilerplate code in
 php, yml or xml.
 
+## TODO
+
+Remove the # for protected and use + for public and - for private (the less common)

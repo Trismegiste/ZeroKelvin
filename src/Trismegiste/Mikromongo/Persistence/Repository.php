@@ -25,12 +25,19 @@ class Repository //implements RepositoryInterface
     /**
      * {@inheritDoc}
      */
-    public function persist(/* Persistable */ $doc)
+    public function persist(Persistable $doc)
     {
         $struc = $this->unserializer->toArray(serialize($doc));
 
+        if (is_null($doc->getId())) {
+            unset($struc['#_id']);
+        } else {
+            $struc['_id'] = $struc['#_id'];
+            unset($struc['#_id']);
+        }
+
         $this->collection->save($struc);
-        //      $doc->setId($struc['_id']);
+        $doc->setId($struc['_id']);
     }
 
     /**

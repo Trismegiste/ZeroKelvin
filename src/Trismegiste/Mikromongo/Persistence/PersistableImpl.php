@@ -12,16 +12,16 @@ namespace Trismegiste\Mikromongo\Persistence;
 trait PersistableImpl
 {
 
-    protected $id;
+    protected $_id;
 
     public function setId(\MongoId $pk)
     {
-        $this->id = $pk;
+        $this->_id = $pk;
     }
 
     public function getId()
     {
-        return $this->id;
+        return $this->_id;
     }
 
 }
