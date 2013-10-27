@@ -56,9 +56,7 @@ class Repository //implements RepositoryInterface
      */
     public function createFromDb(array $struc)
     {
-        $obj = unserialize($this->serializer->fromArray($struc));
-
-        return $obj;
+        return unserialize($this->serializer->fromArray($struc));
     }
 
 }
