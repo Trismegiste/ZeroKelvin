@@ -48,7 +48,7 @@ class UnserializerTest extends \PHPUnit_Framework_TestCase
     {
         $val = new \DateTime();
         $result = $this->service->toArray(serialize($val));
-        $this->assertInstanceOf('MongoDate', $result['date']);
+        $this->assertInstanceOf('MongoDate', $result['+date']);
         $this->assertEquals('DateTime', $result[Unserializer::META_CLASS]);
     }
 
@@ -64,6 +64,11 @@ class UnserializerTest extends \PHPUnit_Framework_TestCase
         $dump = $this->service->toArray(serialize($obj));
         $this->assertInstanceOf('MongoId', $dump);
         $this->assertEquals($dump, $obj);
+    }
+
+    public function testCustom()
+    {
+        $this->service->toArray(serialize(new \tests\fixtures\Entity()));
     }
 
 }

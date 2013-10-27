@@ -92,11 +92,13 @@ class Unserializer implements Serialization
                     $key = $this->recurUnserializer($body, $rest);
                     // manage access
                     if ($key[0] === "\000") {
-                        if ($key[1] === '*') {
-                            $key = self::META_PROTECTED . substr($key, 3);
-                        } else {
+                        if ($key[1] !== '*') {
                             $key = self::META_PRIVATE . substr($key, 2 + $classLen);
+                        } else {
+                            $key = substr($key, 3);
                         }
+                    } else {
+                        $key = self::META_PUBLIC . $key;
                     }
                     $body = $rest;
                     // manage value
@@ -110,11 +112,11 @@ class Unserializer implements Serialization
                 // handling special object for MongoDb
                 switch ($className) {
                     case 'DateTime':
-                        $objAssoc['date'] = new \MongoDate(strtotime($objAssoc['date']));
+                        $objAssoc['+date'] = new \MongoDate(strtotime($objAssoc['+date']));
                         break;
 
                     case 'MongoBinData':
-                        $objAssoc = new \MongoBinData($objAssoc['bin'], $objAssoc['type']);
+                        $objAssoc = new \MongoBinData($objAssoc['+bin'], $objAssoc['+type']);
                         break;
                 }
 
@@ -131,6 +133,7 @@ class Unserializer implements Serialization
                 preg_match('#^C:(\d+):"([^"]+)":(\d+):(.*)#', $str, $extract);
 
                 $className = $extract[2];
+                $rest = substr($extract[4], $extract[3] + 2);
                 if ($className === 'MongoId') {
                     return new \MongoId(substr($extract[4], 1, $extract[3]));
                 }
