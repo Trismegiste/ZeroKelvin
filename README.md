@@ -11,7 +11,7 @@ because :
  * zero repository classes
  * zero property mapping
  * zero annotation, yml, xml, cache nor proxy
- * zero doc to browse to start (except this file)
+ * zero doc to browse (except this file)
 
 ## What
 
@@ -39,17 +39,19 @@ php, yml or xml.
 ## How
 
 ```php
-use Trismegiste\Mikromongo\Service;
-
-$builder = new Service();
-$repository = $builder->getRepository();
-// saving an object :
-$repository->persist($product);
-// retrieving an object by its pk :
-$found = $repository->findByPk('526d30f9631b6f6013000000');
+    $builder = new \Trismegiste\Mikromongo\Service();
+    $repository = $builder->getRepository();
+    // saving an object :
+    $product = new LightSaber('red');
+    $repository->persist($product);
+    $pk = (string) $product->getId();
+    // retrieving an object by its pk :
+    $found = $repository->findByPk($pk);
+    echo $found->getColor(); // => 'red'
 ```
 
 The object $product must implement Persistable and use the trait PersistableImpl.
+See the [full example][2] in functional tests.
 
 Anything else is optional. You can make cleaning and waking-up with magic methods
 __sleep() and __wakeup().
@@ -68,3 +70,5 @@ __sleep() and __wakeup().
 
  * Implementations of the interface Serializable are stored as-is
  * No cyclic reference can be stored
+
+[2]: http://github.com

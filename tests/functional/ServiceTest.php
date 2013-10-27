@@ -17,9 +17,9 @@ class ServiceTest extends \PHPUnit_Framework_TestCase
     public function testCreation()
     {
         $service = new Service();
-        $repo = $service->getRepository();
 
-        $this->assertInstanceOf('Trismegiste\Mikromongo\Persistence\RepositoryInterface', $repo);
+        $this->assertInstanceOf('Trismegiste\Mikromongo\Persistence\RepositoryInterface', $service->getRepository());
+        $this->assertInstanceOf('MongoCollection', $service->getCollection());
     }
 
 }
