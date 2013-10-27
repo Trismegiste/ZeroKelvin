@@ -38,7 +38,8 @@ trait DataProvider
         $simple->prop = 123;
 
         $cplx = clone $simple;
-        $cplx->tab = array(1, true, "2\";2", array(3, new \stdClass()), 4);
+        $cplx->tab = [1, true, "2\";2", [3, new \stdClass()], 4];
+        $cplx->ending = new \ArrayObject([7, 8, 9]);
 
         $ref = new \stdClass();
         $ref->p1 = new \stdClass();
@@ -56,7 +57,11 @@ trait DataProvider
                     '+tab' => [
                         1, true, "2\";2",
                         [3, [Serialization::META_CLASS => 'stdClass']],
-                        4
+                        4,
+                    ],
+                    '+ending' => [
+                        Serialization::META_CLASS => 'ArrayObject',
+                        Serialization::META_CUSTOM => new \MongoBinData('x:i:0;a:3:{i:0;i:7;i:1;i:8;i:2;i:9;};m:a:0:{}', \MongoBinData::BYTE_ARRAY)
                     ]
                 ]
             ],

@@ -66,4 +66,9 @@ class UnserializerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($dump, $obj);
     }
 
+    public function testCustom()
+    {
+        $this->service->toArray(serialize(new \tests\fixtures\Entity()));
+    }
+
 }

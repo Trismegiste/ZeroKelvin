@@ -15,8 +15,8 @@ class Entity implements Persistence\Persistable
     private $compound;
     protected $init = 1234;
     protected $embed;
-
     // private $ref;
+    protected $custom;
 
     public function __construct()
     {
@@ -27,6 +27,7 @@ class Entity implements Persistence\Persistable
         $this->init = 5678;
         $this->embed = new Access();
         //$this->ref = $this->embed;
+        $this->custom = new \ArrayObject([299, 792, 458]);
     }
 
     public function setAnswer($n)

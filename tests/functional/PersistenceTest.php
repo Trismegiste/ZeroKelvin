@@ -64,7 +64,7 @@ class PersistenceTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @depends testRead
+     * @depends testFind
      */
     public function testUpdate($pk)
     {
@@ -75,6 +75,7 @@ class PersistenceTest extends \PHPUnit_Framework_TestCase
         $this->repository->persist($found);
         $raw = $this->collection->findOne(['_id' => new \MongoId($pk)]);
         $this->assertEquals(2001, $raw['-answer']);
+        $this->assertEquals(new \MongoId($pk), $raw['_id']);
     }
 
 }
