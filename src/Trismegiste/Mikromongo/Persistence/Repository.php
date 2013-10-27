@@ -1,5 +1,9 @@
 <?php
 
+/*
+ * Mikromongo
+ */
+
 namespace Trismegiste\Mikromongo\Persistence;
 
 use Trismegiste\Mikromongo\Transformer\Serializer;

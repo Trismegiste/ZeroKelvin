@@ -68,14 +68,15 @@ class PersistenceTest extends \PHPUnit_Framework_TestCase
      */
     public function testUpdate($pk)
     {
+        $id = new \MongoId($pk);
         $expected = new Entity();
-        $expected->setId(new \MongoId($pk));
+        $expected->setId($id);
         $found = $this->repository->findByPk($pk);
         $found->setAnswer(2001);
         $this->repository->persist($found);
-        $raw = $this->collection->findOne(['_id' => new \MongoId($pk)]);
+        $raw = $this->collection->findOne(['_id' => $id]);
         $this->assertEquals(2001, $raw['-answer']);
-        $this->assertEquals(new \MongoId($pk), $raw['_id']);
+        $this->assertEquals($id, $raw['_id']);
     }
 
     /**

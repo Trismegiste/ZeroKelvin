@@ -8,6 +8,8 @@ namespace Trismegiste\Mikromongo\Persistence;
 
 /**
  * A concrete connector against MongoDB. It's a wrapper to encapsulate config
+ * 
+ * This simple class mainly because mongo extension is subject to many changes
  */
 class Connector
 {
@@ -20,7 +22,7 @@ class Connector
     }
 
     /**
-     * Returns the mongo collection with the parameters setted in constructor
+     * Returns the mongo collection with the parameters set in constructor
      *
      * @return \MongoCollection
      */

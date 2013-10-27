@@ -7,22 +7,23 @@ A MongoDb micro-ODM for micro-framework
 because :
 
  * zero config (if localhost)
- * zero class to extend, even abstract one !
- * zero entity repositories
+ * zero class to extend, even abstract one
+ * zero repository classes
  * zero property mapping
- * zero doc to browse (except this file)
+ * zero annotation, yml, xml, cache nor proxy
+ * zero doc to browse to start (except this file)
 
 ## What
 
 It is an Object Document Mapper for MongoDb. It is based on php internal serialization.
-It is intended for rich documents and complex model because I'm fed up with the Anemic
-Model Anti-pattern produced by most of ORM/ODM.
+It is intended for rich documents and complex model. I'm fed up with the Anemic
+Model Anti-pattern produced by most of ORM/ODM because the 
+"Database Driven Development" is a bad workflow. 
 
-Because the "Database Driven Engineering" is a bad practice, I think we should
-design classes and model how we think the business and in no way how your ORM want 
-to implement the object <=> database mapping. I don't care if I must add and 
-name my getter/setter for the ORM to understand the mapping, adding gazillions 
-of complex annotations, validators and create dumb constructors (without argument). 
+We should design classes and model how we think the business and in no way 
+how one ORM wants to implement its object <=> database mapping. 
+The learning curve is awful (to get perfs) and we suffer too much constraints
+to design our model. 
 
 On the other
 hand, PHP can serialize and store any complex object even with cyclic references 
@@ -43,15 +44,25 @@ use Trismegiste\Mikromongo\Service;
 $builder = new Service();
 $repository = $builder->getRepository();
 // saving an object :
-$repository->persist($myEntity);
+$repository->persist($product);
 // retrieving an object by its pk :
 $found = $repository->findByPk('526d30f9631b6f6013000000');
 ```
 
-The object $myEntity must implement Persistable and use the trait PersistableImpl.
+The object $product must implement Persistable and use the trait PersistableImpl.
 
 Anything else is optional. You can make cleaning and waking-up with magic methods
 __sleep() and __wakeup().
+
+## Features
+
+ * No mapping needed
+ * Total freedom on model constructors
+ * Total freedom on model inheritance
+ * Embedded and complex objects design handling
+ * DateTime are converted to MongoDate for queries against the collection
+ * MongoBinData are stored as-is
+ * around 160 NCLOC !
 
 ## Limitations
 

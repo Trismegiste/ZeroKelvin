@@ -13,7 +13,7 @@ namespace Trismegiste\Mikromongo\Transformer;
 interface Serialization
 {
 
-    const META_CLASS = '@class';
+    const META_CLASS = '@classname';
     const META_PRIVATE = '-';
     const META_PROTECTED = '';
     const META_PUBLIC = '+';

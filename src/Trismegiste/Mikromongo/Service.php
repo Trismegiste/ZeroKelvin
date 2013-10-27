@@ -12,7 +12,7 @@ use Trismegiste\Mikromongo\Transformer\Unserializer;
 use Trismegiste\Mikromongo\Persistence\Repository;
 
 /**
- * Service is the service of Persistence of Mikromongo
+ * Service builds the repository against a MongoCollection
  */
 class Service
 {
@@ -23,17 +23,40 @@ class Service
         'database' => 'mikromongo',
         'collection' => 'entity'
     ];
+    protected $collection;
+    protected $repository;
 
     public function __construct(array $config = array())
     {
         $this->config = array_merge($this->defaultCfg, $config);
     }
 
+    /**
+     * Gets the current repository
+     *  
+     * @return \Trismegiste\Mikromongo\Persistence\RepositoryInterface
+     */
     public function getRepository()
     {
-        $cnx = new Connector($this->config);
+        if (is_null($this->repository)) {
+            $this->repository = new Repository($this->getCollection(), new Serializer(), new Unserializer());
+        }
+        return $this->repository;
+    }
 
-        return new Repository($cnx->getCollection(), new Serializer(), new Unserializer());
+    /**
+     * Gets the current collection
+     * 
+     * @return MongoCollection
+     */
+    public function getCollection()
+    {
+        if (is_null($this->collection)) {
+            $cnx = new Connector($this->config);
+            $this->collection = $cnx->getCollection();
+        }
+
+        return $this->collection;
     }
 
 }

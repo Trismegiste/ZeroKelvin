@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Dokudokibundle
+ * Mikromongo
  */
 
 namespace Trismegiste\Mikromongo\Persistence;

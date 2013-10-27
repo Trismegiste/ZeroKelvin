@@ -7,14 +7,14 @@
 namespace Trismegiste\Mikromongo\Persistence;
 
 /**
- * A template for a repository
+ * A contract for a repository
  */
 interface RepositoryInterface
 {
 
     /**
      * Transforms an object tree into a tree/array and persists it 
-     * into a database layer
+     * into the database layer
      * 
      * @param Persistable $doc
      */
