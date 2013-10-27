@@ -127,7 +127,7 @@ class Unserializer implements Serialization
                 preg_match('#^(r|R):(\d+);(.*)#', $str, $extract);
                 $rest = $extract[3];
 
-                return [self::META_REFERENCE => [$extract[1] => (int) $extract[2]]];
+                return null;
 
             case 'C':
                 preg_match('#^C:(\d+):"([^"]+)":(\d+):(.*)#', $str, $extract);

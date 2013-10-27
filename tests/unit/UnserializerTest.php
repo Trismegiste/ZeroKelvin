@@ -71,4 +71,19 @@ class UnserializerTest extends \PHPUnit_Framework_TestCase
         $this->service->toArray(serialize(new \tests\fixtures\Entity()));
     }
 
+    /**
+     * References are nulled
+     */
+    public function testNullReference()
+    {
+        $obj = new \stdClass();
+        $obj->prop = $obj;
+        $flat = [
+            Unserializer::META_CLASS => 'stdClass',
+            '+prop' => null
+        ];
+        $dump = $this->service->toArray(serialize($obj));
+        $this->assertEquals($flat, $dump);
+    }
+
 }

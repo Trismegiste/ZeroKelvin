@@ -41,12 +41,6 @@ trait DataProvider
         $cplx->tab = [1, true, "2\";2", [3, new \stdClass()], 4];
         $cplx->ending = new \ArrayObject([7, 8, 9]);
 
-        $ref = new \stdClass();
-        $ref->p1 = new \stdClass();
-        $ref->p2 = $ref->p1;
-        $ref->p3 = 123;
-        $ref->p4 = &$ref->p3;
-
         return [
             [$simple, [Serialization::META_CLASS => 'stdClass', '+prop' => 123]],
             [
@@ -63,16 +57,6 @@ trait DataProvider
                         Serialization::META_CLASS => 'ArrayObject',
                         Serialization::META_CUSTOM => new \MongoBinData('x:i:0;a:3:{i:0;i:7;i:1;i:8;i:2;i:9;};m:a:0:{}', \MongoBinData::BYTE_ARRAY)
                     ]
-                ]
-            ],
-            [
-                $ref,
-                [
-                    Serialization::META_CLASS => 'stdClass',
-                    '+p1' => [Serialization::META_CLASS => 'stdClass'],
-                    '+p2' => [Serialization::META_REFERENCE => ['r' => 2]],
-                    '+p3' => 123,
-                    '+p4' => [Serialization::META_REFERENCE => ['R' => 4]]
                 ]
             ],
             [

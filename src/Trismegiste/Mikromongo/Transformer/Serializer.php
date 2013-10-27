@@ -25,11 +25,7 @@ class Serializer implements Serialization
     {
         $current = '';
 
-        if (array_key_exists(self::META_REFERENCE, $dump)) {
-            $ref = $dump[self::META_REFERENCE];
-
-            return key($ref) . ':' . current($ref) . ';';
-        } else if (array_key_exists(self::META_CUSTOM, $dump)) {
+        if (array_key_exists(self::META_CUSTOM, $dump)) {
             $fqcn = $dump[self::META_CLASS];
             $content = $dump[self::META_CUSTOM];
             $current = 'C:' . strlen($fqcn) . ':"' . $fqcn . '":' . strlen($content->bin) . ':{' . $content->bin;
