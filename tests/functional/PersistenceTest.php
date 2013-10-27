@@ -78,4 +78,12 @@ class PersistenceTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(new \MongoId($pk), $raw['_id']);
     }
 
+    /**
+     * @expectedException Trismegiste\Mikromongo\Persistence\NotFoundException
+     */
+    public function testNotFound()
+    {
+        $this->repository->findByPk(123);
+    }
+
 }
