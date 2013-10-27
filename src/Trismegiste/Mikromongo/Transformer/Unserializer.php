@@ -133,6 +133,7 @@ class Unserializer implements Serialization
                 preg_match('#^C:(\d+):"([^"]+)":(\d+):(.*)#', $str, $extract);
 
                 $className = $extract[2];
+                $rest = substr($extract[4], $extract[3] + 2);
                 if ($className === 'MongoId') {
                     return new \MongoId(substr($extract[4], 1, $extract[3]));
                 }
