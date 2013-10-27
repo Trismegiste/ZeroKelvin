@@ -47,13 +47,13 @@ trait DataProvider
         $ref->p4 = &$ref->p3;
 
         return [
-            [$simple, [Serialization::META_CLASS => 'stdClass', 'prop' => 123]],
+            [$simple, [Serialization::META_CLASS => 'stdClass', '+prop' => 123]],
             [
                 $cplx,
                 [
                     Serialization::META_CLASS => 'stdClass',
-                    'prop' => 123,
-                    'tab' => [
+                    '+prop' => 123,
+                    '+tab' => [
                         1, true, "2\";2",
                         [3, [Serialization::META_CLASS => 'stdClass']],
                         4
@@ -64,10 +64,10 @@ trait DataProvider
                 $ref,
                 [
                     Serialization::META_CLASS => 'stdClass',
-                    'p1' => [Serialization::META_CLASS => 'stdClass'],
-                    'p2' => [Serialization::META_REFERENCE => ['r' => 2]],
-                    'p3' => 123,
-                    'p4' => [Serialization::META_REFERENCE => ['R' => 4]]
+                    '+p1' => [Serialization::META_CLASS => 'stdClass'],
+                    '+p2' => [Serialization::META_REFERENCE => ['r' => 2]],
+                    '+p3' => 123,
+                    '+p4' => [Serialization::META_REFERENCE => ['R' => 4]]
                 ]
             ],
             [
@@ -75,8 +75,8 @@ trait DataProvider
                 [
                     Serialization::META_CLASS => 'tests\fixtures\Access',
                     '-notInherited' => 111,
-                    '#inherited' => 222,
-                    'openbar' => 333
+                    'inherited' => 222,
+                    '+openbar' => 333
                 ]
             ],
             [

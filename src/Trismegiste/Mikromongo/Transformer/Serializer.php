@@ -50,8 +50,11 @@ class Serializer implements Serialization
                         case self::META_PRIVATE:
                             $key = "\000$fqcn\000" . substr($key, 1);
                             break;
-                        case self::META_PROTECTED:
-                            $key = "\000*\000" . substr($key, 1);
+                        case self::META_PUBLIC:
+                            $key = substr($key, 1);
+                            break;
+                        default:
+                            $key = "\000*\000" . $key;
                             break;
                     }
                 }

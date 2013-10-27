@@ -31,11 +31,11 @@ class SerializerTest extends \PHPUnit_Framework_TestCase
     {
         $flat = [
             Serializer::META_CLASS => 'stdClass',
-            'now' => [
+            '+now' => [
                 Serializer::META_CLASS => 'DateTime',
-                'date' => new \MongoDate(),
-                'timezone_type' => 3,
-                'timezone' => 'Europe/Paris'
+                '+date' => new \MongoDate(),
+                '+timezone_type' => 3,
+                '+timezone' => 'Europe/Paris'
             ]
         ];
 
@@ -49,7 +49,7 @@ class SerializerTest extends \PHPUnit_Framework_TestCase
     {
         $flat = [
             Serializer::META_CLASS => 'stdClass',
-            'img' => new \MongoBinData('yolo', \MongoBinData::BYTE_ARRAY)
+            '+img' => new \MongoBinData('yolo', \MongoBinData::BYTE_ARRAY)
         ];
 
         $obj = unserialize($this->service->fromArray($flat));
