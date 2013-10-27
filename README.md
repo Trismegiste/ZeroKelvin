@@ -37,7 +37,21 @@ php, yml or xml.
 
 ## How
 
+```php
+use Trismegiste\Mikromongo\Service;
 
+$builder = new Service();
+$repository = $builder->getRepository();
+// saving an object :
+$repository->persist($myEntity);
+// retrieving an object by its pk :
+$found = $repository->findByPk('526d30f9631b6f6013000000');
+```
+
+The object $myEntity must implement Persistable and use the trait PersistableImpl.
+
+Anything else is optional. You can make cleaning and waking-up with magic methods
+__sleep() and __wakeup().
 
 ## Limitations
 

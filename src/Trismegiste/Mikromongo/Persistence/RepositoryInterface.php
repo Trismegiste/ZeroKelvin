@@ -8,8 +8,6 @@ namespace Trismegiste\Mikromongo\Persistence;
 
 /**
  * A template for a repository
- * 
- * @author flo
  */
 interface RepositoryInterface
 {
@@ -36,7 +34,7 @@ interface RepositoryInterface
 
     /**
      * Creates an instance and maps this object with data retrieved from 
-     * database. Usefull when using MongoCollection::find
+     * database. Usefull when iterating over a MongoCursor
      * 
      * @param array $struc a raw structure coming from database
      * 
