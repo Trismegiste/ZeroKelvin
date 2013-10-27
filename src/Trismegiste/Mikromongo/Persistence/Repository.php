@@ -8,7 +8,7 @@ use Trismegiste\Mikromongo\Transformer\Unserializer;
 /**
  * Repository of mongo document
  */
-class Repository //implements RepositoryInterface
+class Repository implements RepositoryInterface
 {
 
     protected $collection;
