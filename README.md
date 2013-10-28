@@ -29,12 +29,12 @@ On the other
 hand, PHP can serialize and store any complex object even with cyclic references 
 in session without coding anything. Do you see the gap ?
 
-So I design this lib. DokudokiBundle was a first attempt but it is more suited
+So I design this lib. [DokudokiBundle][1] was a first attempt but it is more suited
 for a full stack framework due to its complication. This ODM is simpler.
 
 The goal is a tool ready to use in 5 minutes, like microframeworks 
 which doesn't need extended doc reading and tons of boilerplate code in
-php, yml or xml.
+php, yml and xml.
 
 ## How
 
@@ -64,11 +64,12 @@ __sleep() and __wakeup().
  * Embedded and complex objects design handling
  * DateTime are converted to MongoDate for queries against the collection
  * MongoBinData are stored as-is
- * around 160 NCLOC !
+ * around 170 NCLOC !
 
 ## Limitations
 
  * Implementations of the interface Serializable are stored as-is
  * No cyclic reference can be stored
 
+[1]: http://github.com
 [2]: http://github.com

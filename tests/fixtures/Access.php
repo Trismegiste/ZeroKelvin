@@ -6,6 +6,7 @@ class Access
 {
 
     private $notInherited;
+    protected $noise;
     protected $inherited;
     public $openbar;
 

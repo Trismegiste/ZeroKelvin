@@ -56,6 +56,7 @@ class Unserializer implements Serialization
                 return substr($extract[2], 0, $extract[1]);
 
             case 'N':
+                $rest = substr($str, 2);
                 return null;
 
             case 'a':

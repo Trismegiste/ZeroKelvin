@@ -64,6 +64,7 @@ trait DataProvider
                 [
                     Serialization::META_CLASS => 'tests\fixtures\Access',
                     '-notInherited' => 111,
+                    'noise' => null,
                     'inherited' => 222,
                     '+openbar' => 333
                 ]
