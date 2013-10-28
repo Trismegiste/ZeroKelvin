@@ -23,11 +23,10 @@ Model Anti-pattern produced by most of ORM/ODM because the
 We should design classes and model how we think the business and in no way 
 how one ORM wants to implement its object <=> database mapping. 
 The learning curve is awful (to get perfs) and we suffer too much constraints
-to design our model. 
+to evolve our model. 
 
-On the other
-hand, PHP can serialize and store any complex object even with cyclic references 
-in session without coding anything. Do you see the gap ?
+On the other side, PHP can serialize and store any complex object even with 
+cyclic references in session without coding anything. Do you see the gap ?
 
 So I design this lib. [DokudokiBundle][1] was a first attempt but it is more suited
 for a full stack framework due to its complication. This ODM is simpler.

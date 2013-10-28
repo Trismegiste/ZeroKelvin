@@ -43,6 +43,21 @@ class ReadmeTest extends \PHPUnit_Framework_TestCase
         echo $found->getOwnerName(); // => 'vader'
     }
 
+    public function testQuery()
+    {
+        $this->expectOutputString('red');
+
+        $builder = new \Trismegiste\Mikromongo\Service();
+        // makes a query
+        $found = $builder->getCollection()
+                ->findOne(array('owner.name' => 'vader'));
+        // maps a result from database to get on object
+        $obj = $builder->getRepository()
+                ->createFromDb($found);
+        // check if 'red'
+        echo $obj->getColor();
+    }
+
 }
 
 // some example class
