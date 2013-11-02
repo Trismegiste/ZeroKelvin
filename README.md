@@ -70,5 +70,5 @@ __sleep() and __wakeup().
  * Implementations of the interface Serializable are stored as-is
  * No cyclic reference can be stored
 
-[1]: http://github.com
-[2]: http://github.com
+[1]: https://github.com/Trismegiste/DokudokiBundle
+[2]: https://github.com/Trismegiste/Mikromongo/blob/master/tests/functional/ReadmeTest.php
