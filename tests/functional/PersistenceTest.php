@@ -84,7 +84,7 @@ class PersistenceTest extends \PHPUnit_Framework_TestCase
      */
     public function testNotFound()
     {
-        $this->repository->findByPk(123);
+        $this->repository->findByPk("4274c645631b6f8c1a000008");
     }
 
 }

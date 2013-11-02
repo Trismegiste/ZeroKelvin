@@ -1,4 +1,4 @@
-# Mikromongo
+# Mikromongo [![Build Status](https://travis-ci.org/Trismegiste/Mikromongo.png?branch=master)](https://travis-ci.org/Trismegiste/Mikromongo)
 
 A MongoDb micro-ODM for micro-framework
 
