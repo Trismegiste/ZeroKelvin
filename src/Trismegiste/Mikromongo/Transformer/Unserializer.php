@@ -73,8 +73,14 @@ class Unserializer implements Serialization
                     // manage key                    
                     $key = $this->recurUnserializer($body, $rest);
                     $body = $rest;
+                    // keep the index of this value
+                    $ptr = count($this->reference);
+                    $this->reference[$ptr] = null;
                     // manage value
                     $val = $this->recurUnserializer($body, $rest);
+                    // track the index for reference
+                    $this->reference[$ptr] = &$val;
+
                     $assoc[$key] = $val;
                     $body = $rest;
                 }
@@ -108,8 +114,14 @@ class Unserializer implements Serialization
                         $key = self::META_PUBLIC . $key;
                     }
                     $body = $rest;
+
+                    // keep the index of this value
+                    $ptr = count($this->reference);
+                    $this->reference[$ptr] = null;
                     // manage value
                     $val = $this->recurUnserializer($body, $rest);
+                    // track the index for reference
+                    $this->reference[$ptr] = &$val;
                     $objAssoc[$key] = $val;
                     $body = $rest;
                 }
@@ -133,7 +145,8 @@ class Unserializer implements Serialization
             case 'R':
                 preg_match('#^(r|R):(\d+);(.*)#', $str, $extract);
                 $rest = $extract[3];
-
+                echo "search={$extract[2]} ";
+                print_r($this->reference);
                 return ['@ref' => $this->reference[$extract[2]]['@index']];
 
             case 'C':

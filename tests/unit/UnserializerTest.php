@@ -77,11 +77,15 @@ class UnserializerTest extends \PHPUnit_Framework_TestCase
     public function testNullReference()
     {
         $obj = new \stdClass();
-        $obj->prop = $obj;
+        $obj->prop1 = 123;
+        $obj->obj1 = new \stdClass();
+        $obj->ref1 = $obj;
+        $obj->ref2 = $obj->obj1;
+        echo serialize($obj);
         $flat = [
             Unserializer::META_CLASS => 'stdClass',
             '@index' => 1,
-            '+prop' => ['@ref' => 1]
+            '+prop1' => ['@ref' => 1]
         ];
         $dump = $this->service->toArray(serialize($obj));
         $this->assertEquals($flat, $dump);
