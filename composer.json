@@ -1,0 +1,22 @@
+{
+    "name": "trismegiste/glassprison",
+    "description": "Freeze your objects into carbonite",
+    "type": "library",
+    "keywords": ["serializer"],
+    "license": "CC-BY-SA-3.0",
+    "authors": [
+        {
+            "name": "Trismegiste",
+            "email": "flo@trismegiste.net"
+        }
+    ],
+    "require": {
+        "php": ">=5.4.3"
+    },
+    "minimum-stability": "dev",
+    "autoload": {
+        "psr-0": {
+            "Trismegiste\\GlassPrison\\": "src"
+        }
+    }
+}
