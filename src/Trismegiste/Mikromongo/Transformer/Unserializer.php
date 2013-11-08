@@ -14,6 +14,8 @@ namespace Trismegiste\Mikromongo\Transformer;
 class Unserializer implements Serialization
 {
 
+    protected $reference = [];
+
     /**
      * Transforms a serialized string into an array
      * 
@@ -24,6 +26,7 @@ class Unserializer implements Serialization
     public function toArray($str)
     {
         $rest = '';
+        $this->reference = [0 => null];
         return $this->recurUnserializer($str, $rest);
     }
 
@@ -81,6 +84,9 @@ class Unserializer implements Serialization
 
             case 'O':
                 $objAssoc = array();
+                $objAssoc['@index'] = count($this->reference);
+                $this->reference[] = &$objAssoc;
+
                 preg_match('#^O:(\d+):"([^"]+)":(\d+):{(.*)#', $str, $extract);
 
                 $className = $extract[2];
@@ -128,7 +134,7 @@ class Unserializer implements Serialization
                 preg_match('#^(r|R):(\d+);(.*)#', $str, $extract);
                 $rest = $extract[3];
 
-                return null;
+                return ['@ref' => $this->reference[$extract[2]]['@index']];
 
             case 'C':
                 preg_match('#^C:(\d+):"([^"]+)":(\d+):(.*)#', $str, $extract);

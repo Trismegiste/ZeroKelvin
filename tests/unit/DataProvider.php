@@ -42,7 +42,7 @@ trait DataProvider
         $cplx->ending = new \ArrayObject([7, 8, 9]);
 
         return [
-            [$simple, [Serialization::META_CLASS => 'stdClass', '+prop' => 123]],
+            [$simple, [Serialization::META_CLASS => 'stdClass', '+prop' => 123, '@index' => 1]],
             [
                 $cplx,
                 [
@@ -50,13 +50,14 @@ trait DataProvider
                     '+prop' => 123,
                     '+tab' => [
                         1, true, "2\";2",
-                        [3, [Serialization::META_CLASS => 'stdClass']],
-                        4,
+                        [3, [Serialization::META_CLASS => 'stdClass', '@index' => 2]],
+                        4                        
                     ],
                     '+ending' => [
                         Serialization::META_CLASS => 'ArrayObject',
                         Serialization::META_CUSTOM => new \MongoBinData('x:i:0;a:3:{i:0;i:7;i:1;i:8;i:2;i:9;};m:a:0:{}', \MongoBinData::BYTE_ARRAY)
-                    ]
+                    ],
+                    '@index' => 1
                 ]
             ],
             [
@@ -66,7 +67,8 @@ trait DataProvider
                     '-notInherited' => 111,
                     'noise' => null,
                     'inherited' => 222,
-                    '+openbar' => 333
+                    '+openbar' => 333,
+                    '@index' => 1                    
                 ]
             ],
             [

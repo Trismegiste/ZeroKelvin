@@ -80,7 +80,8 @@ class UnserializerTest extends \PHPUnit_Framework_TestCase
         $obj->prop = $obj;
         $flat = [
             Unserializer::META_CLASS => 'stdClass',
-            '+prop' => null
+            '@index' => 1,
+            '+prop' => ['@ref' => 1]
         ];
         $dump = $this->service->toArray(serialize($obj));
         $this->assertEquals($flat, $dump);
