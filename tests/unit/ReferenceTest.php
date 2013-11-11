@@ -14,11 +14,13 @@ use tests\fixtures\Vertex;
 class ReferenceTest extends \PHPUnit_Framework_TestCase
 {
 
-    protected $sut;
+    protected $unserial;
+    protected $serial;
 
     protected function setUp()
     {
-        $this->sut = new \Trismegiste\GlassPrison\Unserializer;
+        $this->unserial = new \Trismegiste\GlassPrison\Unserializer;
+        $this->serial = new \Trismegiste\GlassPrison\Serializer();
     }
 
     public function testCycle()
@@ -35,8 +37,10 @@ class ReferenceTest extends \PHPUnit_Framework_TestCase
         $vertices[3]->add($vertices[0]);
 
         $str = serialize($vertices[0]);
-        echo $str;
-        print_r($this->sut->toArray($str));
+        $dump = $this->unserial->toArray($str);
+        $restore = $this->serial->fromArray($dump);
+        $this->assertEquals($str, $restore);
+        $this->assertEquals($vertices[0], unserialize($restore));
     }
 
 }

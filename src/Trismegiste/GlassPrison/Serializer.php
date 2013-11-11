@@ -4,7 +4,7 @@
  * GlassPrison
  */
 
-namespace Trismegiste\GlassPrison\Transformer;
+namespace Trismegiste\GlassPrison;
 
 /**
  * Serializer is a serializer service
@@ -13,6 +13,8 @@ namespace Trismegiste\GlassPrison\Transformer;
  */
 class Serializer implements Serialization
 {
+
+    protected $reference;
 
     /**
      * Transforms an full array tree with magic keys to a serialized string of objects
@@ -23,8 +25,25 @@ class Serializer implements Serialization
      */
     public function fromArray(array $dump)
     {
-        $current = '';
+        $this->reference = [null];
+        return $this->recursivFromArray($dump);
+    }
 
+    protected function recursivFromArray(array $dump)
+    {
+        if (array_key_exists(self::META_REF, $dump)) {
+            $uuid = $dump[self::META_REF];
+            $found = array_search($uuid, $this->reference);
+            if (false !== $found) {
+                return 'r:' . $found . ';';
+            } else {
+                print_r($this->reference);
+                print_r($dump);
+                throw new \InvalidArgumentException("uuid {$dump[self::META_REF]} not found");
+            }
+        }
+
+        $current = '';
         if (array_key_exists(self::META_CUSTOM, $dump)) {
             $fqcn = $dump[self::META_CLASS];
             $content = $dump[self::META_CUSTOM];
@@ -34,9 +53,12 @@ class Serializer implements Serialization
             if (array_key_exists(self::META_CLASS, $dump)) {
                 $fqcn = $dump[self::META_CLASS];
                 unset($dump[self::META_CLASS]);
+                $this->reference[] = $dump[self::META_UUID];
+                unset($dump[self::META_UUID]);
                 $current = 'O:' . strlen($fqcn) . ':"' . $fqcn . '":' . (count($dump)) . ":{";
             } else {
                 $current = 'a:' . (count($dump)) . ":{";
+                $this->reference[] = null;
             }
             // manage content assoc
             foreach ($dump as $key => $val) {
@@ -57,17 +79,9 @@ class Serializer implements Serialization
                 $current .= serialize($key);
                 // manage value
                 if (is_array($val)) {
-                    $current .= $this->fromArray($val);
+                    $current .= $this->recursivFromArray($val);
                 } else {
-                    if (is_object($val)) {
-                        switch (get_class($val)) {
-                            case 'MongoDate' :
-                                if (isset($fqcn) && ($fqcn === 'DateTime')) {
-                                    $val = date('Y-m-d H:i:s', $val->sec);
-                                }
-                                break;
-                        }
-                    }
+                    $this->reference[] = null;
                     $current.= serialize($val);
                 }
             }

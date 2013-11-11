@@ -110,7 +110,7 @@ class Unserializer implements Serialization
                     self::META_UUID => rand()
                 ];
                 // we have more information on this value, we update it
-                $this->reference[count($this->reference)-1] = & $objAssoc;
+                $this->reference[count($this->reference) - 1] = & $objAssoc;
                 for ($idx = 0; $idx < $len; $idx++) {
                     // manage key
                     $key = $this->recurUnserializeData($body, $rest);
