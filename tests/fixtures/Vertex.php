@@ -5,8 +5,9 @@ namespace tests\fixtures;
 class Vertex
 {
 
+    public $parent;
     protected $name;
-    protected $neighbor = [];
+    private $neighbor = [];
 
     public function __construct($n)
     {

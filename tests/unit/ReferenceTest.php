@@ -7,6 +7,9 @@
 namespace tests\unit;
 
 use tests\fixtures\Vertex;
+use Trismegiste\GlassPrison\Unserializer;
+use Trismegiste\GlassPrison\Serializer;
+use Trismegiste\GlassPrison\UuidFactory;
 
 /**
  * ReferenceTest tests the unserialization of reference
@@ -19,8 +22,8 @@ class ReferenceTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->unserial = new \Trismegiste\GlassPrison\Unserializer;
-        $this->serial = new \Trismegiste\GlassPrison\Serializer();
+        $this->unserial = new Unserializer(new UuidFactory());
+        $this->serial = new Serializer();
     }
 
     public function testCycle()
@@ -38,6 +41,7 @@ class ReferenceTest extends \PHPUnit_Framework_TestCase
 
         $str = serialize($vertices[0]);
         $dump = $this->unserial->toArray($str);
+        print_r($dump);
         $restore = $this->serial->fromArray($dump);
         $this->assertEquals($str, $restore);
         $this->assertEquals($vertices[0], unserialize($restore));

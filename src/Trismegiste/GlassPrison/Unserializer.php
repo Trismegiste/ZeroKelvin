@@ -15,6 +15,12 @@ class Unserializer implements Serialization
 {
 
     protected $reference;
+    protected $uuidFactory;
+
+    public function __construct(UniqueGenerator $fac)
+    {
+        $this->uuidFactory = $fac;
+    }
 
     /**
      * Transforms a serialized string into an array
@@ -107,7 +113,7 @@ class Unserializer implements Serialization
                 $body = $extract[4];
                 $objAssoc = [
                     self::META_CLASS => $className,
-                    self::META_UUID => rand()
+                    self::META_UUID => $this->uuidFactory->create()
                 ];
                 // we have more information on this value, we update it
                 $this->reference[count($this->reference) - 1] = & $objAssoc;
@@ -115,15 +121,8 @@ class Unserializer implements Serialization
                     // manage key
                     $key = $this->recurUnserializeData($body, $rest);
                     // manage access
-                    if ($key[0] === "\000") {
-                        if ($key[1] !== '*') {
-                            $key = self::META_PRIVATE . substr($key, 2 + $classLen);
-                        } else {
-                            $key = substr($key, 3);
-                        }
-                    } else {
-                        $key = self::META_PUBLIC . $key;
-                    }
+                    $key = str_replace("\000", '#', $key);
+
                     $body = $rest;
                     // manage value
                     $val = $this->recurUnserializeValue($body, $rest);

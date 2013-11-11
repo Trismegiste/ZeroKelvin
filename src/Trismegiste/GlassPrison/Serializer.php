@@ -37,9 +37,7 @@ class Serializer implements Serialization
             if (false !== $found) {
                 return 'r:' . $found . ';';
             } else {
-                print_r($this->reference);
-                print_r($dump);
-                throw new \InvalidArgumentException("uuid {$dump[self::META_REF]} not found");
+                throw new \InvalidArgumentException("uuid $uuid not found");
             }
         }
 
@@ -47,7 +45,7 @@ class Serializer implements Serialization
         if (array_key_exists(self::META_CUSTOM, $dump)) {
             $fqcn = $dump[self::META_CLASS];
             $content = $dump[self::META_CUSTOM];
-            $current = 'C:' . strlen($fqcn) . ':"' . $fqcn . '":' . strlen($content->bin) . ':{' . $content->bin;
+            $current = 'C:' . strlen($fqcn) . ':"' . $fqcn . '":' . strlen($content) . ':{' . $content;
         } else {
             // object or array ?
             if (array_key_exists(self::META_CLASS, $dump)) {
@@ -64,17 +62,7 @@ class Serializer implements Serialization
             foreach ($dump as $key => $val) {
                 // manage key
                 if (isset($fqcn)) {
-                    switch ($key[0]) {
-                        case self::META_PRIVATE:
-                            $key = "\000$fqcn\000" . substr($key, 1);
-                            break;
-                        case self::META_PUBLIC:
-                            $key = substr($key, 1);
-                            break;
-                        default:
-                            $key = "\000*\000" . $key;
-                            break;
-                    }
+                    $key = str_replace('#', "\000", $key);
                 }
                 $current .= serialize($key);
                 // manage value
