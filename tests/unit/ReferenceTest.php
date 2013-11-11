@@ -41,7 +41,7 @@ class ReferenceTest extends \PHPUnit_Framework_TestCase
 
         $str = serialize($vertices[0]);
         $dump = $this->unserial->toArray($str);
-        print_r($dump);
+        //print_r($dump);
         $restore = $this->serial->fromArray($dump);
         $this->assertEquals($str, $restore);
         $this->assertEquals($vertices[0], unserialize($restore));
