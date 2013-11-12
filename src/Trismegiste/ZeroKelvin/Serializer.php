@@ -63,11 +63,11 @@ class Serializer implements Serialization
                 // manage key
                 if (isset($fqcn)) {
                     switch ($key[0]) {
-                        case '+':
+                        case self::META_PUBLIC:
                             $key = substr($key, 1);
                             break;
-                        case '-':
-                            $key = str_replace('-', "\000", $key);
+                        case self::META_PRIVATE:
+                            $key = str_replace(self::META_PRIVATE, "\000", $key);
                             break;
                         default:
                             $key = "\000*\000" . $key;

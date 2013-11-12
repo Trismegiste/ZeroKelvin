@@ -125,10 +125,10 @@ class Unserializer implements Serialization
                         if ($key[1] === '*') {
                             $key = substr($key, 3);
                         } else {
-                            $key = str_replace("\000", '-', $key);
+                            $key = str_replace("\000", self::META_PRIVATE, $key);
                         }
                     } else {
-                        $key = '+' . $key;
+                        $key = self::META_PUBLIC . $key;
                     }
 
                     $body = $rest;
@@ -142,11 +142,10 @@ class Unserializer implements Serialization
                 return $objAssoc;
 
             case 'r':
-            case 'R':
-                preg_match('#^(r|R):(\d+);(.*)#', $str, $extract);
-                $rest = $extract[3];
+                preg_match('#^r:(\d+);(.*)#', $str, $extract);
+                $rest = $extract[2];
 
-                return [self::META_REF => $this->reference[$extract[2]][self::META_UUID]];
+                return [self::META_REF => $this->reference[$extract[1]][self::META_UUID]];
 
             case 'C':
                 preg_match('#^C:(\d+):"([^"]+)":(\d+):(.*)#', $str, $extract);
