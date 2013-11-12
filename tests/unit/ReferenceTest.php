@@ -1,15 +1,15 @@
 <?php
 
 /*
- * GlassPrison
+ * ZeroKelvin
  */
 
 namespace tests\unit;
 
 use tests\fixtures\Vertex;
-use Trismegiste\GlassPrison\Unserializer;
-use Trismegiste\GlassPrison\Serializer;
-use Trismegiste\GlassPrison\UuidFactory;
+use Trismegiste\ZeroKelvin\Unserializer;
+use Trismegiste\ZeroKelvin\Serializer;
+use Trismegiste\ZeroKelvin\UuidFactory;
 
 /**
  * ReferenceTest tests the unserialization of reference

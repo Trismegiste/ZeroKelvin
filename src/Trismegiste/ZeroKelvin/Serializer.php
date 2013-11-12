@@ -1,10 +1,10 @@
 <?php
 
 /*
- * GlassPrison
+ * ZeroKelvin
  */
 
-namespace Trismegiste\GlassPrison;
+namespace Trismegiste\ZeroKelvin;
 
 /**
  * Serializer is a serializer service

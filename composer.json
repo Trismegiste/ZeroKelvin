@@ -1,13 +1,12 @@
 {
-    "name": "trismegiste/glassprison",
-    "description": "Freeze your objects into carbonite",
+    "name": "trismegiste/zerokelvin",
+    "description": "Freeze your objects to zero kelvin",
     "type": "library",
     "keywords": ["serializer"],
     "license": "CC-BY-SA-3.0",
     "authors": [
         {
-            "name": "Trismegiste",
-            "email": "flo@trismegiste.net"
+            "name": "Trismegiste"
         }
     ],
     "require": {
@@ -16,7 +15,7 @@
     "minimum-stability": "dev",
     "autoload": {
         "psr-0": {
-            "Trismegiste\\GlassPrison\\": "src"
+            "Trismegiste\\ZeroKelvin\\": "src"
         }
     }
 }

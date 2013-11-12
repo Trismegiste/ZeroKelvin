@@ -1,10 +1,10 @@
 <?php
 
 /*
- * GlassPrison
+ * ZeroKelvin
  */
 
-namespace Trismegiste\GlassPrison;
+namespace Trismegiste\ZeroKelvin;
 
 /**
  * UniqueGenerator is a contract for a generator of unique id

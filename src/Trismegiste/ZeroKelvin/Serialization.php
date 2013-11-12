@@ -1,10 +1,10 @@
 <?php
 
 /*
- * GlassPrison
+ * ZeroKelvin
  */
 
-namespace Trismegiste\GlassPrison;
+namespace Trismegiste\ZeroKelvin;
 
 /**
  * Serialization is a contract for transformations
