@@ -62,7 +62,16 @@ class Serializer implements Serialization
             foreach ($dump as $key => $val) {
                 // manage key
                 if (isset($fqcn)) {
-                    $key = str_replace('#', "\000", $key);
+                    switch ($key[0]) {
+                        case '+':
+                            $key = substr($key, 1);
+                            break;
+                        case '-':
+                            $key = str_replace('-', "\000", $key);
+                            break;
+                        default:
+                            $key = "\000*\000" . $key;
+                    }
                 }
                 $current .= serialize($key);
                 // manage value

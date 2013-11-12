@@ -121,7 +121,15 @@ class Unserializer implements Serialization
                     // manage key
                     $key = $this->recurUnserializeData($body, $rest);
                     // manage access
-                    $key = str_replace("\000", '#', $key);
+                    if ($key[0] === "\000") {
+                        if ($key[1] === '*') {
+                            $key = substr($key, 3);
+                        } else {
+                            $key = str_replace("\000", '-', $key);
+                        }
+                    } else {
+                        $key = '+' . $key;
+                    }
 
                     $body = $rest;
                     // manage value
