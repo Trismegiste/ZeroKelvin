@@ -43,18 +43,17 @@ class Unserializer implements Serialization
         if ($str[0] !== 'r') {
             $ptr = count($this->reference);
             $this->reference[$ptr] = null;
+            $value = &$this->reference[$ptr];
+        } else {
+            $value = null;
         }
 
-        $value = $this->recurUnserializeData($str, $rest);
-
-        if (isset($ptr)) {
-            $this->reference[$ptr] = & $value;
-        }
+        $this->recurUnserializeData($str, $rest, $value);
 
         return $value;
     }
 
-    protected function recurUnserializeData($str, &$rest)
+    protected function recurUnserializeData($str, &$rest, &$newValue)
     {
         $extract = array();
 
@@ -62,17 +61,20 @@ class Unserializer implements Serialization
             case 'b':
                 preg_match('#^b:(\d);(.*)#', $str, $extract);
                 $rest = $extract[2];
-                return (bool) $extract[1];
+                $newValue = (bool) $extract[1];
+                break;
 
             case 'i':
                 preg_match('#^i:(\d+);(.*)#', $str, $extract);
                 $rest = $extract[2];
-                return (int) $extract[1];
+                $newValue = (int) $extract[1];
+                break;
 
             case 'd':
                 preg_match('#^d:(\d+.\d+);(.*)#', $str, $extract);
                 $rest = $extract[2];
-                return (double) $extract[1];
+                $newValue = (double) $extract[1];
+                break;
 
             case 's':
                 preg_match('#^s:(\d+):"(.*)#', $str, $extract);
@@ -80,31 +82,33 @@ class Unserializer implements Serialization
                 if (!$rest) {
                     $rest = '';
                 }
-                return substr($extract[2], 0, $extract[1]);
+                $newValue = substr($extract[2], 0, $extract[1]);
+                break;
 
             case 'N':
                 $rest = substr($str, 2);
-                return null;
+                $newValue = null;
+                break;
 
             case 'a':
-                $assoc = array();
+                $newValue = array();
                 preg_match('#^a:(\d+):{(.*)#', $str, $extract);
 
                 $len = $extract[1];
                 $body = $extract[2];
 
                 for ($idx = 0; $idx < $len; $idx++) {
-                    // manage key                    
-                    $key = $this->recurUnserializeData($body, $rest);
+                    // manage key    
+                    $key = null;
+                    $this->recurUnserializeData($body, $rest, $key);
                     $body = $rest;
                     // manage value
                     $val = $this->recurUnserializeValue($body, $rest);
-                    $assoc[$key] = $val;
+                    $newValue[$key] = $val;
                     $body = $rest;
                 }
                 $rest = substr($body, 1); // strip the }
-
-                return $assoc;
+                break;
 
             case 'O':
                 preg_match('#^O:(\d+):"([^"]+)":(\d+):{(.*)#', $str, $extract);
@@ -113,15 +117,15 @@ class Unserializer implements Serialization
                 $classLen = strlen($className);
                 $len = $extract[3];
                 $body = $extract[4];
-                $objAssoc = [
+                $newValue = [
                     self::META_CLASS => $className,
                     self::META_UUID => $this->uuidFactory->create()
                 ];
-                // we have more information on this value, we update it
-                $this->reference[count($this->reference) - 1] = & $objAssoc;
+
                 for ($idx = 0; $idx < $len; $idx++) {
                     // manage key
-                    $key = $this->recurUnserializeData($body, $rest);
+                    $key = null;
+                    $this->recurUnserializeData($body, $rest, $key);
                     // manage access
                     if ($key[0] === "\000") {
                         if ($key[1] === '*') {
@@ -136,18 +140,18 @@ class Unserializer implements Serialization
                     $body = $rest;
                     // manage value
                     $val = $this->recurUnserializeValue($body, $rest);
-                    $objAssoc[$key] = $val;
+                    $newValue[$key] = $val;
                     $body = $rest;
                 }
                 $rest = substr($body, 1); // strip the }
-
-                return $objAssoc;
+                break;
 
             case 'r':
                 preg_match('#^r:(\d+);(.*)#', $str, $extract);
                 $rest = $extract[2];
 
-                return [self::META_REF => $this->reference[$extract[1]][self::META_UUID]];
+                $newValue = [self::META_REF => $this->reference[$extract[1]][self::META_UUID]];
+                break;
 
             case 'C':
                 preg_match('#^C:(\d+):"([^"]+)":(\d+):(.*)#', $str, $extract);
@@ -155,10 +159,11 @@ class Unserializer implements Serialization
                 $className = $extract[2];
                 $rest = substr($extract[4], $extract[3] + 2);
 
-                return [
+                $newValue = [
                     self::META_CLASS => $className,
                     self::META_CUSTOM => substr($extract[4], 1, $extract[3])
                 ];
+                break;
 
             default:
                 throw new \OutOfBoundsException("Fail to unserialize {$str[0]} type");
