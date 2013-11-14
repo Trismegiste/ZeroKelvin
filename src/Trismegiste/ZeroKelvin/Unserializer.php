@@ -35,7 +35,13 @@ class Unserializer implements Serialization
         $rest = '';
         $this->reference = [null];
         $this->flatList = [];
-        return $this->recurUnserializeValue($str, $rest);
+        $ret = $this->recurUnserializeValue($str, $rest);
+        $last = array_pop($this->flatList);
+        $last['@foreign'] = array_keys($this->flatList);
+        array_unshift($this->flatList, $last);
+        $ret = array_values($this->flatList);
+        //print_r($ret);
+        return $ret;
     }
 
     protected function recurUnserializeValue($str, &$rest)
@@ -50,7 +56,13 @@ class Unserializer implements Serialization
 
         $this->recurUnserializeData($str, $rest, $value);
 
-        return $value;
+        if ($str[0] == 'O') {
+            $pk = $value[self::META_UUID];
+            $this->flatList[$pk] = $value;
+            return [self::META_REF => $pk];
+        } else {
+            return $value;
+        }
     }
 
     protected function recurUnserializeData($str, &$rest, &$newValue)

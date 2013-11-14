@@ -15,6 +15,7 @@ class Serializer implements Serialization
 {
 
     protected $reference;
+    protected $foreign;
 
     /**
      * Transforms an full array tree with magic keys to a serialized string of objects
@@ -26,18 +27,34 @@ class Serializer implements Serialization
     public function fromArray(array $dump)
     {
         $this->reference = [null];
-        return $this->recursivFromArray($dump);
+        $root = array_shift($dump);
+        $this->foreign = $dump;
+        unset($root['@foreign']);
+        return $this->recursivFromArray($root);
     }
 
     protected function recursivFromArray(array $dump)
     {
         if (array_key_exists(self::META_REF, $dump)) {
             $uuid = $dump[self::META_REF];
-            $found = array_search($uuid, $this->reference);
-            if (false !== $found) {
-                return 'r:' . $found . ';';
+            $nonInserted = false;
+            foreach ($this->foreign as $idx => $obj) {
+                if ($obj[self::META_UUID] == $uuid) {
+                    $nonInserted = $obj;
+                    unset($this->foreign[$idx]);
+                    break;
+                }
+            }
+
+            if (!$nonInserted) {
+                $found = array_search($uuid, $this->reference);
+                if (false !== $found) {
+                    return 'r:' . $found . ';';
+                } else {
+                    throw new \InvalidArgumentException("uuid $uuid not found");
+                }
             } else {
-                throw new \InvalidArgumentException("uuid $uuid not found");
+                return $this->recursivFromArray($obj);
             }
         }
 
