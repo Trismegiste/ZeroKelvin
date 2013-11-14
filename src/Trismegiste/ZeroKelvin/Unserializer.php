@@ -16,6 +16,7 @@ class Unserializer implements Serialization
 
     protected $reference;
     protected $uuidFactory;
+    protected $flatList;
 
     public function __construct(UniqueGenerator $fac)
     {
@@ -33,6 +34,7 @@ class Unserializer implements Serialization
     {
         $rest = '';
         $this->reference = [null];
+        $this->flatList = [];
         return $this->recurUnserializeValue($str, $rest);
     }
 
