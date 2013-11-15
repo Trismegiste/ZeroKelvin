@@ -42,4 +42,16 @@ class UnserializerTest extends \PHPUnit_Framework_TestCase
         $this->service->toArray('X');
     }
 
+    /**
+     * @dataProvider getSplType
+     */
+    public function testSpl($obj, $flat)
+    {
+        $this->generator->expects($this->exactly(count($flat)))
+                ->method('create')
+                ->will($this->onConsecutiveCalls('AAAA', 'AAAB', 'AAAC'));
+
+        $this->assertEquals($flat, $this->service->toArray(serialize($obj)));
+    }
+
 }

@@ -27,4 +27,14 @@ class SerializerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($src, unserialize($this->service->fromArray($dst)));
     }
 
+    /**
+     * @dataProvider getSplType
+     */
+    public function testSpl($obj, $flat)
+    {
+        $result = unserialize($this->service->fromArray($flat));
+        $this->assertInstanceOf('SplObjectStorage', $result->prop);
+        $this->assertCount(2, $result->prop);
+    }
+
 }

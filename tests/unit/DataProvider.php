@@ -88,11 +88,23 @@ trait DataProvider
         $spl2 = new \SplObjectStorage();
         $spl2[new \stdClass()] = 123;
         $spl2[new \stdClass()] = 456;
-        $flt2 = [Serialization::META_CLASS => 'SplObjectStorage', Serialization::META_CUSTOM => 'x:i:2;O:8:"stdClass":0:{},i:123;;O:8:"stdClass":0:{},i:456;;m:a:0:{}'];
+        $obj = new \stdClass();
+        $obj->prop = $spl2;
 
-        return [
-            [$spl2, $flt2]
-        ];
+        return [[
+        $obj,
+        [
+            [
+                Serialization::META_CLASS => 'stdClass',
+                Serialization::META_UUID => 'AAAA',
+                '+prop' => [
+                    Serialization::META_CLASS => 'SplObjectStorage',
+                    Serialization::META_CUSTOM => 'x:i:2;O:8:"stdClass":0:{},i:123;;O:8:"stdClass":0:{},i:456;;m:a:0:{}'
+                ],
+                Serialization::META_FOREIGN => []
+            ]
+        ]
+        ]];
     }
 
 }
