@@ -37,7 +37,7 @@ class Unserializer implements Serialization
         $this->flatList = [];
         $ret = $this->recurUnserializeValue($str, $rest);
         $last = array_pop($this->flatList);
-        $last['@foreign'] = array_keys($this->flatList);
+        $last[self::META_FOREIGN] = array_keys($this->flatList);
         array_unshift($this->flatList, $last);
         $ret = array_values($this->flatList);
         //print_r($ret);

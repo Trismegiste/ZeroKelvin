@@ -14,70 +14,72 @@ use Trismegiste\ZeroKelvin\Serialization;
 trait DataProvider
 {
 
-    public function getInternalType()
-    {
-        $data = [
-            false, true,
-            123, 123.456,
-            "illogical",
-            null,
-            [123], [123, 456],
-            [[], 123, [456, [[[]]]], "w:;\":s:3:\"esh" => 789, "str" => "com\"bo", [[]]]
-        ];
-        $fixtures = [];
-        foreach ($data as $val) {
-            $fixtures[] = [$val];
-        }
-
-        return $fixtures;
-    }
-
-    public function getObjectType()
+    public function objectProvider()
     {
         $simple = new \stdClass();
-        $simple->prop = 123;
+        $simple->propInt = 123;
+        $simple->propBool = true;
+        $simple->propVector = [1, 2, 3];
+        $simple->propStr = "do or do not";
+        $expected = [
+            Serialization::META_CLASS => 'stdClass',
+            '+propInt' => 123,
+            '+propBool' => true,
+            '+propVector' => [1, 2, 3],
+            '+propStr' => "do or do not",
+            Serialization::META_UUID => 'AAAA',
+            '@foreign' => []
+        ];
 
-        $cplx = clone $simple;
-        $cplx->tab = [1, true, "2\";2", [3, new \stdClass()], 4];
-        $cplx->ending = new \ArrayObject([7, 8, 9]);
+        $object1 = new \tests\fixtures\Access();
+        $flat1 = [
+            Serialization::META_CLASS => 'tests\fixtures\Access',
+            Serialization::META_UUID => 'AAAA',
+            'noise' => null,
+            '-tests\fixtures\Access-notInherited' => 111,
+            'inherited' => 222,
+            '+openbar' => 333,
+            '@foreign' => []
+        ];
+
+        $object2 = new \tests\fixtures\Entity();
+        $flat2 = [
+            [
+                Serialization::META_CLASS => 'tests\fixtures\Entity',
+                Serialization::META_UUID => 'AAAA',
+                Serialization::META_FOREIGN => ['AAAB', 'AAAC'],
+                '-tests\fixtures\Entity-answer' => 42,
+                '+now' => ['@ref' => 'AAAB'],
+                '-tests\fixtures\Entity-compound' => [1, 4, 9],
+                'init' => 5678,
+                'embed' => ['@ref' => 'AAAC'],
+                '-tests\fixtures\Entity-ref' => ['@ref' => 'AAAC'],
+                'custom' => [
+                    '@classname' => 'ArrayObject',
+                    '@content' => 'x:i:0;a:3:{i:0;i:299;i:1;i:792;i:2;i:458;};m:a:0:{}'
+                ]
+            ],
+            [
+                Serialization::META_CLASS => 'DateTime',
+                Serialization::META_UUID => 'AAAB',
+                '+date' => date('Y-m-d H:i:s'),
+                '+timezone_type' => 3,
+                '+timezone' => 'EST'
+            ],
+            [
+                Serialization::META_CLASS => 'tests\fixtures\Access',
+                Serialization::META_UUID => 'AAAC',
+                '-tests\fixtures\Access-notInherited' => 111,
+                'noise' => null,
+                'inherited' => 222,
+                '+openbar' => 333
+            ]
+        ];
 
         return [
-            [$simple, [Serialization::META_CLASS => 'stdClass', '+prop' => 123, '@uuid' => 'AAAA']],
-            [
-                $cplx,
-                [
-                    Serialization::META_CLASS => 'stdClass',
-                    '@uuid' => 'AAAA',
-                    '+prop' => 123,
-                    '+tab' => [
-                        1, true, "2\";2",
-                        [3, [Serialization::META_CLASS => 'stdClass', '@uuid' => 'AAAA']],
-                        4
-                    ],
-                    '+ending' => [
-                        Serialization::META_CLASS => 'ArrayObject',
-                        Serialization::META_CUSTOM => 'x:i:0;a:3:{i:0;i:7;i:1;i:8;i:2;i:9;};m:a:0:{}'
-                    ]
-                ]
-            ],
-            [
-                new \tests\fixtures\Access(),
-                [
-                    Serialization::META_CLASS => 'tests\fixtures\Access',
-                    '-tests\fixtures\Access-notInherited' => 111,
-                    'noise' => null,
-                    'inherited' => 222,
-                    '+openbar' => 333,
-                    '@uuid' => 'AAAA'
-                ]
-            ],
-            [
-                new \ArrayObject([1, 2, 3]),
-                [
-                    Serialization::META_CLASS => 'ArrayObject',
-                    Serialization::META_CUSTOM => 'x:i:0;a:3:{i:0;i:1;i:1;i:2;i:2;i:3;};m:a:0:{}'
-                ]
-            ]
+            [$simple, [$expected]],
+            [$object1, [$flat1]],
+            [$object2, $flat2]
         ];
     }
 
