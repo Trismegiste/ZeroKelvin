@@ -23,4 +23,9 @@ class UuidFactory implements UniqueGenerator
         );
     }
 
+    public function getFieldName()
+    {
+        return '@uuid';
+    }
+
 }

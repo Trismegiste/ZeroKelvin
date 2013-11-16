@@ -18,6 +18,5 @@ interface Serialization
     const META_PUBLIC = '+';
     const META_CUSTOM = '@content';
     const META_REF = '@ref';
-    const META_UUID = '@uuid';
 
 }

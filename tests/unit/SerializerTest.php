@@ -16,7 +16,12 @@ class SerializerTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->service = new Serializer();
+        $generator = $this->getMock('Trismegiste\ZeroKelvin\UuidFactory');
+        $generator->expects($this->any())
+                ->method('getFieldName')
+                ->will($this->returnValue('@uuid'));
+
+        $this->service = new Serializer($generator);
     }
 
     /**
