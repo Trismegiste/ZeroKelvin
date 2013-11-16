@@ -16,6 +16,12 @@ class Serializer implements Serialization
 
     protected $reference;
     protected $foreign;
+    protected $pkField;
+
+    public function __construct(UniqueGenerator $fac)
+    {
+        $this->pkField = $fac->getFieldName();
+    }
 
     /**
      * Transforms an full array tree with magic keys to a serialized string of objects
@@ -39,7 +45,7 @@ class Serializer implements Serialization
             $uuid = $dump[self::META_REF];
             $nonInserted = false;
             foreach ($this->foreign as $idx => $obj) {
-                if ($obj[self::META_UUID] == $uuid) {
+                if ($obj[$this->pkField] == $uuid) {
                     $nonInserted = $obj;
                     unset($this->foreign[$idx]);
                     break;
@@ -68,8 +74,8 @@ class Serializer implements Serialization
             if (array_key_exists(self::META_CLASS, $dump)) {
                 $fqcn = $dump[self::META_CLASS];
                 unset($dump[self::META_CLASS]);
-                $this->reference[] = $dump[self::META_UUID];
-                unset($dump[self::META_UUID]);
+                $this->reference[] = $dump[$this->pkField];
+                unset($dump[$this->pkField]);
                 $current = 'O:' . strlen($fqcn) . ':"' . $fqcn . '":' . (count($dump)) . ":{";
             } else {
                 $current = 'a:' . (count($dump)) . ":{";

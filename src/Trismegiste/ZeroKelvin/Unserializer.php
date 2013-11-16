@@ -17,10 +17,12 @@ class Unserializer implements Serialization
     protected $reference;
     protected $uuidFactory;
     protected $flatList;
+    protected $pkField;
 
     public function __construct(UniqueGenerator $fac)
     {
         $this->uuidFactory = $fac;
+        $this->pkField = $fac->getFieldName();
     }
 
     /**
@@ -55,7 +57,7 @@ class Unserializer implements Serialization
         $this->recurUnserializeData($str, $rest, $value);
 
         if ($str[0] == 'O') {
-            $pk = $value[self::META_UUID];
+            $pk = $value[$this->pkField];
             $this->flatList[$pk] = $value;
             return [self::META_REF => $pk];
         } else {
@@ -129,7 +131,7 @@ class Unserializer implements Serialization
                 $body = $extract[4];
                 $newValue = [
                     self::META_CLASS => $className,
-                    self::META_UUID => $this->uuidFactory->create()
+                    $this->pkField => $this->uuidFactory->create()
                 ];
 
                 for ($idx = 0; $idx < $len; $idx++) {
@@ -160,7 +162,7 @@ class Unserializer implements Serialization
                 preg_match('#^r:(\d+);(.*)#', $str, $extract);
                 $rest = $extract[2];
 
-                $newValue = [self::META_REF => $this->reference[$extract[1]][self::META_UUID]];
+                $newValue = [self::META_REF => $this->reference[$extract[1]][$this->pkField]];
                 break;
 
             case 'C':

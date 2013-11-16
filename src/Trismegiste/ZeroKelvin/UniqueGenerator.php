@@ -13,4 +13,6 @@ interface UniqueGenerator
 {
 
     public function create();
+
+    public function getFieldName();
 }
