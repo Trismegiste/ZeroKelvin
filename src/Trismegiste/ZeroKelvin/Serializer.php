@@ -29,7 +29,7 @@ class Serializer implements Serialization
         $this->reference = [null];
         $root = array_shift($dump);
         $this->foreign = $dump;
-        unset($root['@foreign']);
+        unset($root[self::META_FOREIGN]);
         return $this->recursivFromArray($root);
     }
 

@@ -19,12 +19,14 @@ trait DataProvider
         $simple = new \stdClass();
         $simple->propInt = 123;
         $simple->propBool = true;
+        $simple->propReal = 3.14;
         $simple->propVector = [1, 2, 3];
         $simple->propStr = "do or do not";
         $expected = [
             Serialization::META_CLASS => 'stdClass',
             '+propInt' => 123,
             '+propBool' => true,
+            '+propReal' => 3.14,
             '+propVector' => [1, 2, 3],
             '+propStr' => "do or do not",
             Serialization::META_UUID => 'AAAA',
