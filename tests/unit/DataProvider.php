@@ -29,8 +29,7 @@ trait DataProvider
             '+propReal' => 3.14,
             '+propVector' => [1, 2, 3],
             '+propStr' => "do or do not",
-            Serialization::META_UUID => 'AAAA',
-            '@foreign' => []
+            Serialization::META_UUID => 'AAAA'
         ];
 
         $object1 = new \tests\fixtures\Access();
@@ -40,8 +39,7 @@ trait DataProvider
             'noise' => null,
             '-tests\fixtures\Access-notInherited' => 111,
             'inherited' => 222,
-            '+openbar' => 333,
-            '@foreign' => []
+            '+openbar' => 333
         ];
 
         $object2 = new \tests\fixtures\Entity();
@@ -49,7 +47,6 @@ trait DataProvider
             [
                 Serialization::META_CLASS => 'tests\fixtures\Entity',
                 Serialization::META_UUID => 'AAAA',
-                Serialization::META_FOREIGN => ['AAAB', 'AAAC'],
                 '-tests\fixtures\Entity-answer' => 42,
                 '+now' => ['@ref' => 'AAAB'],
                 '-tests\fixtures\Entity-compound' => [1, 4, 9],
@@ -102,8 +99,7 @@ trait DataProvider
                 '+prop' => [
                     Serialization::META_CLASS => 'SplObjectStorage',
                     Serialization::META_CUSTOM => 'x:i:2;O:8:"stdClass":0:{},i:123;;O:8:"stdClass":0:{},i:456;;m:a:0:{}'
-                ],
-                Serialization::META_FOREIGN => []
+                ]
             ]
         ]
         ]];
