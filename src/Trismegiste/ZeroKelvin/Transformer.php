@@ -38,6 +38,9 @@ class Transformer
         return $this->unserializer->toArray(serialize($obj));
     }
 
+    /**
+     * The bijection of above method
+     */
     public function fromArray(array $arr)
     {
         return unserialize($this->serializer->fromArray($arr));
