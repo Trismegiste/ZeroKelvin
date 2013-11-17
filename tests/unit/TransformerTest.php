@@ -26,5 +26,13 @@ class TransformerTest extends \PHPUnit_Framework_TestCase
         $obj = new \stdClass();
         $this->assertEquals($obj, $this->sut->fromArray($this->sut->toArray($obj)));
     }
+    
+    /**
+     * @expectedException \InvalidArgumentException
+     */
+    public function testValidator()
+    {
+        $this->sut->toArray([1]);
+    }
 
 }

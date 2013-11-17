@@ -69,4 +69,22 @@ class RepositoryTest extends \PHPUnit_Framework_TestCase
         $this->repository->findByPk("4274c645631b6f8c1a000008");
     }
 
+    /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage contain
+     */
+    public function testInvalidRoot()
+    {
+        $this->repository->createFromDb([[]]);
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage match
+     */
+    public function testInvalidCount()
+    {
+        $this->repository->createFromDb([[Repository::FIELD_FOREIGN => [1]]]);
+    }
+
 }
