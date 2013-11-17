@@ -7,7 +7,6 @@
 namespace tests\functional;
 
 use Trismegiste\ZeroKelvin\Transformer;
-use Trismegiste\ZeroKelvin\UuidFactory;
 
 /**
  * DumperExample gives example of the serializing process
