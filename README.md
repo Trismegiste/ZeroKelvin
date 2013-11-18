@@ -11,8 +11,9 @@ It is an object serializer/unserializer. There are many, but this one can :
  * create an object no matter the constructor is
  * Absolutly no contraints on how objects are designed
 
-## Example
+## Examples
 
+### Object to arrays
 ```php
 $transform = new \Trismegiste\ZeroKelvin\Transformer(new \Trismegiste\ZeroKelvin\UuidFactory());
 $product = new LightSaber('red');
@@ -35,6 +36,7 @@ print_r($dump);
 ]
 ```
 
+### Arrays to object
 ```php
 $transform = new \Trismegiste\ZeroKelvin\Transformer(new \Trismegiste\ZeroKelvin\UuidFactory());
 $dump = [
@@ -74,23 +76,23 @@ Var_dump cannot deal with recursion, var_export cannot export SplObjectStorage
 and using reflection to recursively introspect parent classes of an object 
 is a pain in the ass.
 
-So I came up with this lib. Later, I put a repository service to store those dumps
-into MongoDb.
+So I came up with this lib. Later, I have added a repository service to 
+store those dumps into MongoDb.
 
 ## Why
 
 It was a foolish attempt to make an ODM for MongoDb but I think 
 it is unwise to use it for that purpose :
- * there is too much noise in objects
+ * there is too much noise into objects
  * this is damn slow
  * no real error handling if objects would be updated in database
  * queries should be awful
  * updates are not possible
 
 Anyway, this lib could be useful for tests, fast prototyping, simple app in 
-CLI or a model with a really painful mapping (a graph for example). I
-mention that entity loading from MongoDb are made in only two passes even of a case
-complex tree structures with high depth.
+CLI or some specific use cases like an asynchronous event queue. I have to
+mention that entity loading from MongoDb are made in only two passes even with
+complex tree structures with high depth. 
 
 ## What this library cannot do ?
 

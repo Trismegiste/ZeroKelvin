@@ -13,10 +13,12 @@ interface RepositoryInterface
 {
 
     /**
-     * Transforms an object tree into a tree/array and persists it 
+     * Transforms an object tree into a arrays list and persists it 
      * into the database layer
      * 
      * @param object $doc
+     * 
+     * @return string the primary key of the root entity
      */
     function persist($doc);
 
@@ -36,9 +38,9 @@ interface RepositoryInterface
      * Creates an instance and maps this object with data retrieved from 
      * database. Usefull when iterating over a MongoCursor
      * 
-     * @param array $struc a raw structure coming from database
+     * @param array $struc a raw list of flat arrays coming from database
      * 
-     * @return Persistable
+     * @return object
      */
     function createFromDb(array $struc);
 }

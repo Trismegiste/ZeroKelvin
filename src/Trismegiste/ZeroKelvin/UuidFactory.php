@@ -8,6 +8,7 @@ namespace Trismegiste\ZeroKelvin;
 
 /**
  * UuidFactory creates UUID unique id
+ * Copy pasted from php.net
  */
 class UuidFactory implements UniqueGenerator
 {

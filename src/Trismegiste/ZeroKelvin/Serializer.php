@@ -9,7 +9,8 @@ namespace Trismegiste\ZeroKelvin;
 /**
  * Serializer is a serializer service
  * 
- * It serializes a non-object multidimensional array with magic keys to a php serialized string
+ * It serializes a non-object multidimensional array list with magic 
+ * keys to a php serialized string
  */
 class Serializer implements Serialization
 {
@@ -26,7 +27,7 @@ class Serializer implements Serialization
     /**
      * Transforms an full array tree with magic keys to a serialized string of objects
      * 
-     * @param array $dump the array with array-transformed objects
+     * @param array $dump the array list with array-transformed objects
      * 
      * @return string the result string which could be unserialized into objects
      */

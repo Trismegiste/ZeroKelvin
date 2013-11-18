@@ -16,6 +16,11 @@ class Transformer
     protected $serializer;
     protected $unserializer;
 
+    /**
+     * Ctor
+     * 
+     * @param \Trismegiste\ZeroKelvin\UniqueGenerator $keygen a generator of unique identifier
+     */
     public function __construct(UniqueGenerator $keygen)
     {
         $this->serializer = new Serializer($keygen);
@@ -39,7 +44,7 @@ class Transformer
     }
 
     /**
-     * The bijection of above method
+     * The bijection of the above method
      */
     public function fromArray(array $arr)
     {

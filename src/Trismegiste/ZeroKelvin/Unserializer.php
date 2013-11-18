@@ -9,7 +9,7 @@ namespace Trismegiste\ZeroKelvin;
 /**
  * Unserializer is a unserializer service
  * 
- * It unserializes a string to a non-object multidimensional array
+ * It unserializes a string with object to a non-object multidimensional array
  */
 class Unserializer implements Serialization
 {
@@ -30,7 +30,7 @@ class Unserializer implements Serialization
      * 
      * @param string $str the php serialized string
      * 
-     * @return array a full array tree with object transformed into array with magic key
+     * @return array a list of arrays with objects transformed into array with magic key
      */
     public function toArray($str)
     {
@@ -46,6 +46,7 @@ class Unserializer implements Serialization
 
     protected function recurUnserializeValue($str, &$rest)
     {
+        // tracking reference count
         if ($str[0] !== 'r') {
             $ptr = count($this->reference);
             $this->reference[$ptr] = null;
@@ -65,6 +66,9 @@ class Unserializer implements Serialization
         }
     }
 
+    /**
+     * Reverse engineering of serialization with regex
+     */
     protected function recurUnserializeData($str, &$rest, &$newValue)
     {
         $extract = array();
