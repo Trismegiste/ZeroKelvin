@@ -66,7 +66,7 @@ trait DataProvider
                 Serialization::META_UUID => 'AAAB',
                 '+date' => date('Y-m-d H:i:s'),
                 '+timezone_type' => 3,
-                '+timezone' => 'EST'
+                '+timezone' => date_default_timezone_get()
             ],
             [
                 Serialization::META_CLASS => 'tests\fixtures\Access',
