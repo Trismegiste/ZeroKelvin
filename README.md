@@ -89,10 +89,18 @@ it is unwise to use it for that purpose :
  * queries should be awful
  * updates are not possible
 
-Anyway, this lib could be useful for tests, fast prototyping, simple app in 
+Anyway, this lib could be useful for tests and debug, fast prototyping, simple app in 
 CLI or some specific use cases like an asynchronous event queue. I have to
 mention that entity loading from MongoDb are made in only two passes even with
 complex tree structures with high depth. 
+
+## Extending this lib
+You can easily change the field name and the generation of primary keys by
+implementing UniqueGenerator interface.
+
+You also can add your own repository (for XML files, CouchDB...) by implementing
+RepositoryInterface
+
 
 ## What this library cannot do ?
 

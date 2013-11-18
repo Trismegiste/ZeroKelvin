@@ -4,7 +4,7 @@
  * Persistence
  */
 
-namespace Trismegiste\ZeroKelvin\MongoDb;
+namespace Trismegiste\ZeroKelvin;
 
 /**
  * A contract for a repository

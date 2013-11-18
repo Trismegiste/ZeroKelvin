@@ -23,7 +23,7 @@ class MongoStoreTest extends \PHPUnit_Framework_TestCase
 
     public function testBuild()
     {
-        $this->assertInstanceOf('Trismegiste\ZeroKelvin\MongoDb\RepositoryInterface', $this->sut->getRepository());
+        $this->assertInstanceOf('Trismegiste\ZeroKelvin\RepositoryInterface', $this->sut->getRepository());
         $this->assertInstanceOf('MongoCollection', $this->sut->getCollection());
     }
 

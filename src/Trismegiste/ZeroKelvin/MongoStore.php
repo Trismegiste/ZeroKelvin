@@ -32,7 +32,7 @@ class MongoStore
     /**
      * Gets the current repository
      *  
-     * @return \Trismegiste\ZeroKelvin\Persistence\RepositoryInterface
+     * @return \Trismegiste\ZeroKelvin\RepositoryInterface
      */
     public function getRepository()
     {

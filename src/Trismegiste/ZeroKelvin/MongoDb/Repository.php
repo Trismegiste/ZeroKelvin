@@ -7,6 +7,7 @@
 namespace Trismegiste\ZeroKelvin\MongoDb;
 
 use Trismegiste\ZeroKelvin\Transformer;
+use Trismegiste\ZeroKelvin\RepositoryInterface;
 
 /**
  * Repository of mongo document
