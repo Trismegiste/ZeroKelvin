@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Mikromongo
+ * ZeroKelvin
  */
 
 namespace tests\unit;
@@ -29,27 +29,24 @@ trait DataProvider
             '+propReal' => 3.14,
             '+propVector' => [1, 2, 3],
             '+propStr' => "do or do not",
-            Serialization::META_UUID => 'AAAA',
-            '@foreign' => []
+            '@uuid' => 'AAAA'
         ];
 
         $object1 = new \tests\fixtures\Access();
         $flat1 = [
             Serialization::META_CLASS => 'tests\fixtures\Access',
-            Serialization::META_UUID => 'AAAA',
+            '@uuid' => 'AAAA',
             'noise' => null,
             '-tests\fixtures\Access-notInherited' => 111,
             'inherited' => 222,
-            '+openbar' => 333,
-            '@foreign' => []
+            '+openbar' => 333
         ];
 
         $object2 = new \tests\fixtures\Entity();
         $flat2 = [
             [
                 Serialization::META_CLASS => 'tests\fixtures\Entity',
-                Serialization::META_UUID => 'AAAA',
-                Serialization::META_FOREIGN => ['AAAB', 'AAAC'],
+                '@uuid' => 'AAAA',
                 '-tests\fixtures\Entity-answer' => 42,
                 '+now' => ['@ref' => 'AAAB'],
                 '-tests\fixtures\Entity-compound' => [1, 4, 9],
@@ -63,14 +60,14 @@ trait DataProvider
             ],
             [
                 Serialization::META_CLASS => 'DateTime',
-                Serialization::META_UUID => 'AAAB',
+                '@uuid' => 'AAAB',
                 '+date' => date('Y-m-d H:i:s'),
                 '+timezone_type' => 3,
                 '+timezone' => date_default_timezone_get()
             ],
             [
                 Serialization::META_CLASS => 'tests\fixtures\Access',
-                Serialization::META_UUID => 'AAAC',
+                '@uuid' => 'AAAC',
                 '-tests\fixtures\Access-notInherited' => 111,
                 'noise' => null,
                 'inherited' => 222,
@@ -98,12 +95,11 @@ trait DataProvider
         [
             [
                 Serialization::META_CLASS => 'stdClass',
-                Serialization::META_UUID => 'AAAA',
+                '@uuid' => 'AAAA',
                 '+prop' => [
                     Serialization::META_CLASS => 'SplObjectStorage',
                     Serialization::META_CUSTOM => 'x:i:2;O:8:"stdClass":0:{},i:123;;O:8:"stdClass":0:{},i:456;;m:a:0:{}'
-                ],
-                Serialization::META_FOREIGN => []
+                ]
             ]
         ]
         ]];

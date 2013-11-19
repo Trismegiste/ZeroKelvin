@@ -18,6 +18,9 @@ class UnserializerTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->generator = $this->getMock('Trismegiste\ZeroKelvin\UuidFactory');
+        $this->generator->expects($this->any())
+                ->method('getFieldName')
+                ->will($this->returnValue('@uuid'));
         $this->service = new Unserializer($this->generator);
     }
 

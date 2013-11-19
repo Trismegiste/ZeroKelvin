@@ -22,8 +22,9 @@ class ReferenceTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->unserial = new Unserializer(new UuidFactory());
-        $this->serial = new Serializer();
+        $fac = new UuidFactory();
+        $this->unserial = new Unserializer($fac);
+        $this->serial = new Serializer($fac);
     }
 
     public function testCycle()

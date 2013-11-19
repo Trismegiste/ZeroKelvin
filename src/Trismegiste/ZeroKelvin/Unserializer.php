@@ -9,7 +9,7 @@ namespace Trismegiste\ZeroKelvin;
 /**
  * Unserializer is a unserializer service
  * 
- * It unserializes a string to a non-object multidimensional array
+ * It unserializes a string with object to a non-object multidimensional array
  */
 class Unserializer implements Serialization
 {
@@ -17,10 +17,12 @@ class Unserializer implements Serialization
     protected $reference;
     protected $uuidFactory;
     protected $flatList;
+    protected $pkField;
 
     public function __construct(UniqueGenerator $fac)
     {
         $this->uuidFactory = $fac;
+        $this->pkField = $fac->getFieldName();
     }
 
     /**
@@ -28,7 +30,7 @@ class Unserializer implements Serialization
      * 
      * @param string $str the php serialized string
      * 
-     * @return array a full array tree with object transformed into array with magic key
+     * @return array a list of arrays with objects transformed into array with magic key
      */
     public function toArray($str)
     {
@@ -37,7 +39,6 @@ class Unserializer implements Serialization
         $this->flatList = [];
         $ret = $this->recurUnserializeValue($str, $rest);
         $last = array_pop($this->flatList);
-        $last[self::META_FOREIGN] = array_keys($this->flatList);
         array_unshift($this->flatList, $last);
 
         return array_values($this->flatList);
@@ -45,6 +46,7 @@ class Unserializer implements Serialization
 
     protected function recurUnserializeValue($str, &$rest)
     {
+        // tracking reference count
         if ($str[0] !== 'r') {
             $ptr = count($this->reference);
             $this->reference[$ptr] = null;
@@ -56,7 +58,7 @@ class Unserializer implements Serialization
         $this->recurUnserializeData($str, $rest, $value);
 
         if ($str[0] == 'O') {
-            $pk = $value[self::META_UUID];
+            $pk = $value[$this->pkField];
             $this->flatList[$pk] = $value;
             return [self::META_REF => $pk];
         } else {
@@ -64,6 +66,9 @@ class Unserializer implements Serialization
         }
     }
 
+    /**
+     * Reverse engineering of serialization with regex
+     */
     protected function recurUnserializeData($str, &$rest, &$newValue)
     {
         $extract = array();
@@ -130,7 +135,7 @@ class Unserializer implements Serialization
                 $body = $extract[4];
                 $newValue = [
                     self::META_CLASS => $className,
-                    self::META_UUID => $this->uuidFactory->create()
+                    $this->pkField => $this->uuidFactory->create()
                 ];
 
                 for ($idx = 0; $idx < $len; $idx++) {
@@ -161,7 +166,7 @@ class Unserializer implements Serialization
                 preg_match('#^r:(\d+);(.*)#', $str, $extract);
                 $rest = $extract[2];
 
-                $newValue = [self::META_REF => $this->reference[$extract[1]][self::META_UUID]];
+                $newValue = [self::META_REF => $this->reference[$extract[1]][$this->pkField]];
                 break;
 
             case 'C':
